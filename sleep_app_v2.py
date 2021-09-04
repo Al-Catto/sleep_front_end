@@ -58,7 +58,7 @@ def page_userinputs(state):
 
     st.write("---")
     #Q1: Gender (select) "sex"
-    options = ['-', 'Male', 'Female']
+    options = ['-', '0: Male', '1: Female']
     state.sex = st.selectbox('What is your gender?', options, options.index(state.sex) if state.sex else 0)
     st.write(state.sex)
 
@@ -81,7 +81,7 @@ def page_userinputs(state):
     #st.write(state.heightcm)
     
     #Q6: Weight "weightkg"
-    state.weightkg = st.text_input("what is your weight in kg?", state.weightkg or "")
+    state.weightkg = st.number_input("what is your weight in kg?", state.weightkg)
     st.write(state.weightkg)
     
     #Q7: Coffee Intake "cups_coffee"
@@ -101,7 +101,7 @@ def page_userinputs(state):
     #st.write(state.alcohol_wk)
     
     #Q10: Smoking  - NON_FEATURE variable used for calculation
-    options = ['-','Yes', 'No']
+    options = ['-','0: No', '1: Yes']
     state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 0)
     #st.write(state.smoke)
     
@@ -273,38 +273,38 @@ def page_medinputs(state):
     st.write("---")
 
     # Q1 HDL Levels
-    state.hdl = st.text_input("What is the patient's HDL level?", state.hdl or "")
+    state.hdl = st.number_input("What is the patient's HDL level?", state.hdl)
     st.write(state.hdl)
     
     # Q2 LDL Levels
-    state.ldl = st.text_input("What is the patient's LDL level?", state.ldl or "")
+    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl)
     st.write(state.ldl)
     
     # Q3 Total Cholestorol
-    state.total_cholesterol = st.text_input("What is the patient's total cholesterol level?", state.total_cholesterol or "")
+    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol)
     st.write(state.total_cholesterol)
     
     # Q4 Triglycerides
-    state.triglycerides = st.text_input("What is the patient's triglyceride level?", state.triglycerides or "")
+    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides)
     st.write(state.triglycerides)
     
     # Q5 Hip Girth (metres)
-    state.hipgirthm = st.text_input("What is the patients hip girth (in metres)?", state.hipgirthm or "")
+    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm)
     
     # Q6 Neck Girth (metres)
-    state.neckgrithm = st.text_input("What is the patient's neck girth (in metres)?", state.neckgrithm or "")
-    
+    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm)
+    st.write(state.neckgirthm)
     # Q7 Waist Girth (metres)
-    state.waistgirthm = st.text_input("What is the patient's waist girth (in metres)?", state.waistgirthm or "")
+    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm)
     
     # Q8 Waist Hip Ratio
-    state.waisthip = st.text_input("What is the patient's waist to hip ratio?", state.waisthip or "")
+    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip )
     
     # Q9 Sit Sysm
-    state.sitsysm = st.text_input("What is the mean of the patient's seated systolic measures?", state.sitsysm or "")
+    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm )
     
     # Q10 Sit Diam
-    state.sitdiam = st.text_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam or "")
+    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam )
     
     # Q11 General Evaluation of the patient's sleep satisfaction
     options = ['-', '1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never']
@@ -339,7 +339,7 @@ def page_medinputs(state):
                                     options.index(state.awake_freq) if state.awake_freq else 0)
     
     # Q18 No Nasal Congestion
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.nasal_cong_none = st.selectbox("Does the patient have no nasal congestion today or tonight?", options, 
                                          options.index(state.nasal_cong_none) if state.nasal_cong_none else 0)
     
@@ -349,28 +349,28 @@ def page_medinputs(state):
                                  options, options.index(state.any_cvd) if state.any_cvd else 0)
     
     # Q20 Hypertension: Self-reported diagnosis by a physician
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.hypertension_ynd = st.selectbox("Does the patient have either high blood pressure or hypertension?", options,
                                           options.index(state.hypertension_ynd) if state.hypertension_ynd else 0)
     
     # Q21 Stroke
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.stroke_ynd = st.selectbox("Has the patient ever had a stroke?", options, options.index(state.stroke_ynd) if state.stroke_ynd else 0)
     
     # Q22 Asthma
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.asthma_ynd = st.selectbox("Has the patient ever had asthma?", options, options.index(state.asthma_ynd) if state.asthma_ynd else 0)
     
     # Q23 Thyroid
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.thyroid_ynd = st.selectbox("Does the patient have a thyroid problem?", options, options.index(state.thyroid_ynd) if state.thyroid_ynd else 0)
     
     # Q24 Arthritis
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.arthritis_ynd = st.selectbox("Does the patient have arthritis?", options, options.index(state.arthritis_ynd) if state.arthritis_ynd else 0)
     
     # Q25 Emphysema
-    options = ['-', 'N: No', 'Y: Yes']
+    options = ['-', '0: No', '1: Yes']
     state.emphysema_ynd = st.selectbox("Does the patient have emphysema?", options, options.index(state.emphysema_ynd) if state.emphysema_ynd else 0)
     
     # Q26 Menopausal Status
@@ -569,8 +569,9 @@ def page_medinputs(state):
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model = joblib.load('practice_waso.joblib')
+        model = joblib.load('test_model1.joblib')
         y = model.predict(prediction_df)
+        st.write(y)
 
     # for i in range(3):
     #     key = f"State value {i}"
@@ -585,11 +586,46 @@ def page_predictions(state):
     display_state_values(state)
 
     st.write("---")
+
+##################### Predictions section #############################
+    st.title(":wrench: Sleep Predicitons")
+    st.write("---")
+
+    st.subheader("Seelp Health Score")
     
+    st.subheader("prediction 1")
+    
+    st.subheader("prediction 2")
+    
+    st.subheader("prediction 3")
+    
+    st.write("---")
+
+##################### Lifestyle section #############################
+    
+    st.title(":smiley:lifestyle Changes")
+    st.write("---")
+    st.subheader(":coffee:Coffee")
+    state.cups_coffee = st.slider("Adjust the number of coffees you drink each day", 0, 15, state.cups_coffee)
+    st.write(state.cups_coffee)
+
+    state.other_caffeine = st.slider("How many other caffeinated drinks do youhave each day in addition to coffee?", 0, 15, state.other_caffeine)
+    st.write(state.other_caffeine)
+
+    state.caffeine = state.cups_coffee + state.other_caffeine
+    st.write(state.caffeine)
+
+    state.weightkg = st.slider("intro text", 0.0, 100.0, state.weightkg)
+    st.write(state.weightkg)
+    
+    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each day?", 0, 20, state.alcohol_wk)
+    st.write(state.alcohol_wk)
+    
+
     # Dynamic state assignments
-    for i in range(3):
-        key = f"State value {i}"
-        state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
+    # for i in range(3):
+    #     key = f"State value {i}"
+    #     state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
 
 
 ######################## STATE VALUES ######################## 
