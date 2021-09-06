@@ -567,16 +567,16 @@ def page_medinputs(state):
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model = joblib.load('sleep_models/se.joblib')
+        model = joblib.load('se.joblib')
         state.yse = model.predict(prediction_df)
         st.write(state.yse)
        
 
-        model = joblib.load('sleep_models/waso.joblib')
+        model = joblib.load('waso.joblib')
         state.ywaso = model.predict(prediction_df)
         st.write(state.ywaso)
         
-        model = joblib.load('sleep_models/tst.joblib')
+        model = joblib.load('tst.joblib')
         state.ytst = model.predict(prediction_df)
         st.write(state.ytst)
 
