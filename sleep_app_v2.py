@@ -273,108 +273,108 @@ def page_medinputs(state):
     st.write("---")
 
     # Q1 HDL Levels
-    state.hdl = st.number_input("What is the patient's HDL level?", state.hdl)
+    state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=53)
     st.write(state.hdl)
     
     # Q2 LDL Levels
-    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl)
+    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl, value=113)
     st.write(state.ldl)
     
     # Q3 Total Cholestorol
-    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol)
+    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol, value=194)
     st.write(state.total_cholesterol)
     
     # Q4 Triglycerides
-    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides)
+    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides, value=141)
     st.write(state.triglycerides)
     
     # Q5 Hip Girth (metres)
-    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm)
+    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm, value=110)
     
     # Q6 Neck Girth (metres)
-    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm)
+    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm, value=38)
     st.write(state.neckgirthm)
     # Q7 Waist Girth (metres)
-    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm)
+    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm, value=101)
     
     # Q8 Waist Hip Ratio
-    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip )
+    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip, value=0.9)
     
     # Q9 Sit Sysm
-    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm )
+    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm, value=127)
     
     # Q10 Sit Diam
-    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam )
+    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam, value=76)
     
     # Q11 General Evaluation of the patient's sleep satisfaction
-    options = ['-', '1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never']
+    options = ['1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never', '-']
     state.eval_general = st.selectbox('How often is the patient satisfied with their sleep?',options, options.index(state.eval_general) if state.eval_general else 0)
     
     # Q12 General Evaluation of the patient's health
-    options = ['-', '1: Excellent', '2: Very Good', '3: Good', '4: Fair', '5: Poor']
+    options = ['1: Excellent', '2: Very Good', '3: Good', '4: Fair', '5: Poor', '-']
     state.eval_health = st.selectbox("What is your general evaluation of the patient's health?", options, options.index(state.eval_health) if state.eval_health else 0)
     
     # Q13 Snoring Frequency
-    options = ['_', '1: Never or rarely', '2: Sometimes', '3: At least once a week', '4: Several (3 to 5) nights per week', '5: Every, or almost every, night', "9: Don't know"]
+    options = ['1: Never or rarely', '2: Sometimes', '3: At least once a week', '4: Several (3 to 5) nights per week', '5: Every, or almost every, night', "9: Don't know", '-']
     state.snore_freq = st.selectbox('How often does the patient snore?', options, options.index(state.snore_freq) if state.snore_freq else 0)
     
     # Q14 Snoring Volume
-    options = ['-', '1: Slightly louder than heavy breathing', '2: As loud as mumbling or talking', '3: Louder than talking', '4: Very loud, can be heard through a closed door',
-               '9: Do not know', '8: Does not apply']
+    options = ['1: Slightly louder than heavy breathing', '2: As loud as mumbling or talking', '3: Louder than talking', '4: Very loud, can be heard through a closed door',
+               '9: Do not know', '8: Does not apply', '-']
     state.snore_vol = st.selectbox("How loud is the patient's snoring?", options, options.index(state.snore_vol) if state.snore_vol else 0)
     
     # Q15 Frequency of choking during sleep
-    options = ['-', "1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know"]
+    options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
     state.choke_freq = st.selectbox("How often does the patient gasp, choke, or make snorting sounds during sleep?", options, 
                                     options.index(state.choke_freq) if state.choke_freq else 0)
     
     # Q16 Sleep apnea
-    options = ['-', "1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know"]
+    options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
     state.apnea_freq = st.selectbox("How often does the patience experience moments during sleep where they stop breathing, or breathe abnormally?", options,
                                     options.index(state.apnea_freq) if state.apnea_freq else 0)
     
     # Q17 Frequency of awakening with gasping or choking
-    options = ['-', "1: Never or rarely", "2: Sometimes", "3: At least once a week", "4: Several nights a week", "5: Every, or almost every, night", "9: Don't know"]
+    options = ["1: Never or rarely", "2: Sometimes", "3: At least once a week", "4: Several nights a week", "5: Every, or almost every, night", "9: Don't know", '-']
     state.awake_freq = st.selectbox("How often does the patient wake suddenly with the feeling of gasping or choking?", options,
                                     options.index(state.awake_freq) if state.awake_freq else 0)
     
     # Q18 No Nasal Congestion
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.nasal_cong_none = st.selectbox("Does the patient have no nasal congestion today or tonight?", options, 
                                          options.index(state.nasal_cong_none) if state.nasal_cong_none else 0)
     
     # Q19 Any Cardiovascular Disease Since Baseline
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.any_cvd = st.selectbox("Has the patient experienced any Cardiovascular Disease since their baseline Polysomnogram?",
                                  options, options.index(state.any_cvd) if state.any_cvd else 0)
     
     # Q20 Hypertension: Self-reported diagnosis by a physician
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.hypertension_ynd = st.selectbox("Does the patient have either high blood pressure or hypertension?", options,
                                           options.index(state.hypertension_ynd) if state.hypertension_ynd else 0)
     
     # Q21 Stroke
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.stroke_ynd = st.selectbox("Has the patient ever had a stroke?", options, options.index(state.stroke_ynd) if state.stroke_ynd else 0)
     
     # Q22 Asthma
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.asthma_ynd = st.selectbox("Has the patient ever had asthma?", options, options.index(state.asthma_ynd) if state.asthma_ynd else 0)
     
     # Q23 Thyroid
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.thyroid_ynd = st.selectbox("Does the patient have a thyroid problem?", options, options.index(state.thyroid_ynd) if state.thyroid_ynd else 0)
     
     # Q24 Arthritis
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.arthritis_ynd = st.selectbox("Does the patient have arthritis?", options, options.index(state.arthritis_ynd) if state.arthritis_ynd else 0)
     
     # Q25 Emphysema
-    options = ['-', '0: No', '1: Yes']
+    options = ['0: No', '1: Yes', '-']
     state.emphysema_ynd = st.selectbox("Does the patient have emphysema?", options, options.index(state.emphysema_ynd) if state.emphysema_ynd else 0)
     
     # Q26 Menopausal Status
-    options = ['-', '0: Regular Periods', '1: Irregular Periods', '2: Periods stopped due to menopause', '4: Periods stopped due to Surgery']
+    options = ['0: Regular Periods', '1: Irregular Periods', '2: Periods stopped due to menopause', '4: Periods stopped due to Surgery', '-']
     state.menopausal_status = st.selectbox("Does the patient still have regular periods?", options, 
                                            options.index(state.menopausal_status) if state.menopausal_status else 0)
     
@@ -383,71 +383,71 @@ def page_medinputs(state):
     st.write(state.num_pregnancies)
     
     # Q28 Asthma medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.asthma_med = st.selectbox("Is the patient currently taking asthma medication?", options, options.index(state.asthma_med) if state.asthma_med else 0)
     
     # Q29 Cholesterol medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.cholesterol_med = st.selectbox("Is the patient currently taking cholesterol medication?", options, 
                                          options.index(state.cholesterol_med) if state.cholesterol_med else 0)
     
     # Q30 Depression Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.depression_med = st.selectbox("Is the patient currently taking any depression medication?", options,
                                         options.index(state.depression_med) if state.depression_med else 0)
     
     # Q31 Hypertension Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.htn_med = st.selectbox("Is the patient currently taking any hypertension medication?", options,
                                  options.index(state.htn_med) if state.htn_med else 0)
     
     # Q32 Decongestants Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.decongestants_med = st.selectbox("Is the patient currently taking any decongestant medication?", options,
                                            options.index(state.decongestants_med) if state.decongestants_med else 0)
     
     # Q33 Antihistamine Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.antihistamines_med = st.selectbox("Is the patient currently taking anti-histamine medication?", options,
                                             options.index(state.antihistamines_med) if state.antihistamines_med else 0)
     
     # Q34 Anxiety Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.anxiety_med = st.selectbox("Is the patient currently taking any anxiety medication?", options,
                                      options.index(state.anxiety_med) if state.anxiety_med else 0)
     
     # Q35 Diabetes Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.diabetes_med = st.selectbox("Is the patient currently taking any diabetes medication?", options,
                                       options.index(state.diabetes_med) if state.diabetes_med else 0)
     
     # Q36 Sedative Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.sedative_med = st.selectbox("Is the patient currently taking any sedative medication?", options,
                                      options.index(state.sedative_med) if state.sedative_med else 0)
     
     # Q37 Thyroid Medication
-    options = ['-', '0: Not taking', '1: Taking']
+    options = ['0: Not taking', '1: Taking', '-']
     state.thyroid_med = st.selectbox("Is the patient currently taking any thyroid medication?", options,
                                      options.index(state.thyroid_med) if state.thyroid_med else 0)
     
     # Q38 Has the patient ever taken supplemental hormones for Hypothyroid?
-    options = ['-', '0: Not taken', '1: Taken']
+    options = ['0: Not taken', '1: Taken', '-']
     state.x0_Hypothyroid = st.selectbox('Has the patient ever taken supplemental hormones for Hypothyroid?', options,
                                         options.index(state.x0_Hypothyroid) if state.x0_Hypothyroid else 0)
     
     # Q39 Is the patient currently using supplemental hormones for menopause?
-    options = ['-', '0: Not taking', '1: Currently taking']
+    options = ['0: Not taking', '1: Currently taking', '-']
     state.x0_C = st.selectbox('Is the patient currently taking supplemental hormones for monpause?', options,
                               options.index(state.x0_C) if state.x0_C else 0)
     
     # Q40 Has the patient never used supplemental hormones for menopause
-    options = ['-', '0: Has taken', '1: Has never taken']
+    options = ['0: Has taken', '1: Has never taken', '-']
     state.x0_N = st.selectbox('Has the patient never taken supplemental hormones for menopause?', options,
                               options.index(state.x0_N) if state.x0_N else 0)
     
     # Q41 Has the patient previously used supplemental hormones for menopause
-    options = ['-', '0: Has never taken', '1: Has previously taken']
+    options = ['0: Has never taken', '1: Has previously taken', '-']
     state.x0_P = st.selectbox('Has the patient previously taken supplemental hormonse for menopause?', options,
                               options.index(state.x0_P) if state.x0_P else 0)
 
@@ -569,9 +569,19 @@ def page_medinputs(state):
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model = joblib.load('test_model1.joblib')
-        y = model.predict(prediction_df)
-        st.write(y)
+        model = joblib.load('se.joblib')
+        state.yse = model.predict(prediction_df)
+        st.write(state.yse)
+       
+
+        model = joblib.load('waso.joblib')
+        state.ywaso = model.predict(prediction_df)
+        st.write(state.ywaso)
+        
+        model = joblib.load('tst.joblib')
+        state.ytst = model.predict(prediction_df)
+        st.write(state.ytst)
+
 
     # for i in range(3):
     #     key = f"State value {i}"
@@ -593,12 +603,16 @@ def page_predictions(state):
 
     st.subheader("Seelp Health Score")
     
+    
     st.subheader("prediction 1")
-    
+    st.write(state.yse)
+
     st.subheader("prediction 2")
-    
+    st.write(state.ywaso)
+
     st.subheader("prediction 3")
-    
+    st.write(state.ytst)
+
     st.write("---")
 
 ##################### Lifestyle section #############################
