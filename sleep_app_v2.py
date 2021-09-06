@@ -1,7 +1,5 @@
 import streamlit as st
 from streamlit.hashing import _CodeHasher
-import datetime
-import requests
 import pandas as pd
 import joblib
 
@@ -569,16 +567,16 @@ def page_medinputs(state):
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model = joblib.load('se.joblib')
+        model = joblib.load('sleep_models/se.joblib')
         state.yse = model.predict(prediction_df)
         st.write(state.yse)
        
 
-        model = joblib.load('waso.joblib')
+        model = joblib.load('sleep_models/waso.joblib')
         state.ywaso = model.predict(prediction_df)
         st.write(state.ywaso)
         
-        model = joblib.load('tst.joblib')
+        model = joblib.load('sleep_models/tst.joblib')
         state.ytst = model.predict(prediction_df)
         st.write(state.ytst)
 
