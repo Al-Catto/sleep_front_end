@@ -97,7 +97,7 @@ def page_userinputs(state):
     #st.write(state.caffeine)
     
     #Q9: Alchol Consumption "alcohol_wk"
-    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each day?", 0, 20, state.alcohol_wk)
+    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each week?", 0, 20, state.alcohol_wk)
     #st.write(state.alcohol_wk)
     
     #Q10: Smoking  - NON_FEATURE variable used for calculation
@@ -273,38 +273,38 @@ def page_medinputs(state):
     st.write("---")
 
     # Q1 HDL Levels
-    state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=53)
+    state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=44) #53 
     st.write(state.hdl)
     
     # Q2 LDL Levels
-    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl, value=113)
+    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl, value=135) # 113
     st.write(state.ldl)
     
     # Q3 Total Cholestorol
-    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol, value=194)
+    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol, value=208) #194
     st.write(state.total_cholesterol)
     
     # Q4 Triglycerides
-    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides, value=141)
+    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides, value=147) #141
     st.write(state.triglycerides)
     
     # Q5 Hip Girth (metres)
-    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm, value=110)
+    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm, value=106) # 110
     
     # Q6 Neck Girth (metres)
-    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm, value=38)
+    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm, value=36) #38
     st.write(state.neckgirthm)
     # Q7 Waist Girth (metres)
-    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm, value=101)
+    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm, value=91) #101
     
     # Q8 Waist Hip Ratio
-    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip, value=0.9)
+    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip, value=0.8585) #0.9
     
     # Q9 Sit Sysm
-    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm, value=127)
+    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm, value=116)#127
     
     # Q10 Sit Diam
-    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam, value=76)
+    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam, value=68)#76
     
     # Q11 General Evaluation of the patient's sleep satisfaction
     options = ['1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never', '-']
@@ -333,7 +333,7 @@ def page_medinputs(state):
     state.apnea_freq = st.selectbox("How often does the patience experience moments during sleep where they stop breathing, or breathe abnormally?", options,
                                     options.index(state.apnea_freq) if state.apnea_freq else 0)
     
-    # Q17 Frequency of awakening with gasping or choking
+    # Q17 Frequency of awakening during the night
     options = ["1: Never or rarely", "2: Sometimes", "3: At least once a week", "4: Several nights a week", "5: Every, or almost every, night", "9: Don't know", '-']
     state.awake_freq = st.selectbox("How often does the patient wake suddenly with the feeling of gasping or choking?", options,
                                     options.index(state.awake_freq) if state.awake_freq else 0)
@@ -632,7 +632,7 @@ def page_predictions(state):
     state.weightkg = st.slider("intro text", 0.0, 100.0, state.weightkg)
     st.write(state.weightkg)
     
-    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each day?", 0, 20, state.alcohol_wk)
+    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each week?", 0, 20, state.alcohol_wk)
     st.write(state.alcohol_wk)
     
 
