@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 
 '''
-# Koala - The Sleep Prediciton App
+# Koala - The Sleep Prediction App
 # '''
 st.image('koala.jpg')
 
@@ -44,8 +44,21 @@ def page_method(state):
     st.title(":smiley: Getting Started")
     st.header('Why is sleep so important?')
     st.header('How can Koala help you?')
-    st.header('How to use Koala')
-
+    #st.header('How to use Koala')
+    
+    my_expander = st.expander("How to use Koala?")
+    my_expander.write('''We calculated your sleep quality based on important lifestyle factors and 
+    other information such as your age, gender and ethnicity. We compared this information from 
+    sleep studies tracking large numbers of individuals to generate an estimate of your sleep quality. 
+    We have defined sleep quality according to three commonly used metrics in scientific literature''')
+    
+    my_expander.write('''Sleep efficiency - the time you spend asleep as a proportion of the time you are in bed''')
+    
+    my_expander.write('''Wake after sleep onset - how long does it take to fall asleep again if you wake up during your sleep''')
+    
+    my_expander.write('''Total sleep time - the amount of time you actually spend sleeping''')
+    
+    my_expander.write('''If you had a star in each of these categories it means based on the information you provided, you were considered to be in the normal range.''')
 ######################## INPUT-USER PAGE ######################## 
 
 # 2. Create and curate the user inputs page
@@ -57,29 +70,29 @@ def page_userinputs(state):
     st.write("---")
     #Q1: Gender (select) "sex"
     options = ['-', '0: Male', '1: Female']
-    state.sex = st.selectbox('What is your gender?', options, options.index(state.sex) if state.sex else 0)
+    state.sex = st.selectbox('What is your gender?', options, options.index(state.sex) if state.sex else 1)
     st.write(state.sex)
 
     #Q2: Age (int input) "age"
-    state.age = st.text_input("what is your age?", state.age or "")
+    state.age = st.number_input("what is your age?", state.age or 41)
     #st.write(state.age)
 
     #Q3: Ethnicity (select) "race"
     options = ['-', '0: Asian', '1: Black', '2: Hispanic', '3: Native American', '5: White']
-    state.race = st.selectbox('What is your ethnicity?', options, options.index(state.race) if state.race else 0)
+    state.race = st.selectbox('What is your ethnicity?', options, options.index(state.race) if state.race else 5)
     #st.write(state.race)
     
     #Q4: Education "education_survey1"
     options = ['-', '1: 8th grade or less', '2: 9-11 grade', '3: 12th/high school graduate', '4: Some college', '5: College bachelors degree', '6: Post graduate college work']
-    state.education_survey1 = st.selectbox('What is your highest level of education?', options, options.index(state.education_survey1) if state.education_survey1 else 0)
+    state.education_survey1 = st.selectbox('What is your highest level of education?', options, options.index(state.education_survey1) if state.education_survey1 else 6)
     #st.write(state.education_survey1)
 
     #Q5: Height "heightcm"
-    state.heightcm = st.text_input("what is your height in cm?", state.heightcm or "")
+    state.heightcm = st.number_input("what is your height in cm?", state.heightcm or 170.0)
     #st.write(state.heightcm)
     
     #Q6: Weight "weightkg"
-    state.weightkg = st.number_input("what is your weight in kg?", state.weightkg)
+    state.weightkg = st.number_input("what is your weight in kg?", state.weightkg or 65.0)
     st.write(state.weightkg)
     
     #Q7: Coffee Intake "cups_coffee"
@@ -100,7 +113,7 @@ def page_userinputs(state):
     
     #Q10: Smoking  - NON_FEATURE variable used for calculation
     options = ['-','0: No', '1: Yes']
-    state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 0)
+    state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 1)
     #st.write(state.smoke)
     
     # "packs_week" 
@@ -119,7 +132,7 @@ def page_userinputs(state):
 
     #Q11: Life assessment "eval_life"
     options = ['-', '1: Completely satisfied', '2: Mostly satisfied', '3: Moderately satisfied', '4: Not very satisfied']
-    state.eval_life = st.selectbox("Please select your level of satisfaction with life.", options, options.index(state.eval_life) if state.eval_life else 0)
+    state.eval_life = st.selectbox("Please select your level of satisfaction with life.", options, options.index(state.eval_life) if state.eval_life else 1)
     #st.write(state.eval_life)
 
     #Q12: Number of naps per day "naps"
@@ -270,6 +283,8 @@ def page_medinputs(state):
     
     st.write("---")
 
+    #my_expander2 = st.expander("Medical professional inputs")
+
     # Q1 HDL Levels
     state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=44) #53 
     st.write(state.hdl)
@@ -363,6 +378,10 @@ def page_medinputs(state):
     options = ['0: No', '1: Yes', '-']
     state.thyroid_ynd = st.selectbox("Does the patient have a thyroid problem?", options, options.index(state.thyroid_ynd) if state.thyroid_ynd else 0)
     
+    # Q23b (NEW) Thyroid_problem 
+    options = ['0: No', '1: Yes', '-']
+    state.thyroid_problem = st.selectbox("Does the patient have a hypothyroidism?", options, options.index(state.thyroid_problem) if state.thyroid_problem else 0)
+
     # Q24 Arthritis
     options = ['0: No', '1: Yes', '-']
     state.arthritis_ynd = st.selectbox("Does the patient have arthritis?", options, options.index(state.arthritis_ynd) if state.arthritis_ynd else 0)
@@ -375,6 +394,10 @@ def page_medinputs(state):
     options = ['0: Regular Periods', '1: Irregular Periods', '2: Periods stopped due to menopause', '4: Periods stopped due to Surgery', '-']
     state.menopausal_status = st.selectbox("Does the patient still have regular periods?", options, 
                                            options.index(state.menopausal_status) if state.menopausal_status else 0)
+    
+  # Q26b (NEW) Hormone therapy Status
+    options = ['0: No', '1: Yes', '-']
+    state.hormone_therapy = st.selectbox("Have you ever taken supplemental hormones for menopause?", options, options.index(state.hormone_therapy) if state.hormone_therapy else 0)
     
     # Q27 Number of Pregnancies
     state.num_pregnancies = st.slider('How many times has the patient been pregnant?', 0, 10, state.num_pregnancies)
@@ -429,25 +452,25 @@ def page_medinputs(state):
     state.thyroid_med = st.selectbox("Is the patient currently taking any thyroid medication?", options,
                                      options.index(state.thyroid_med) if state.thyroid_med else 0)
     
-    # Q38 Has the patient ever taken supplemental hormones for Hypothyroid?
-    options = ['0: Not taken', '1: Taken', '-']
-    state.x0_Hypothyroid = st.selectbox('Has the patient ever taken supplemental hormones for Hypothyroid?', options,
-                                        options.index(state.x0_Hypothyroid) if state.x0_Hypothyroid else 0)
+    # # Q38 Has the patient ever taken supplemental hormones for Hypothyroid?
+    # options = ['0: Not taken', '1: Taken', '-']
+    # state.x0_Hypothyroid = st.selectbox('Has the patient ever taken supplemental hormones for Hypothyroid?', options,
+    #                                     options.index(state.x0_Hypothyroid) if state.x0_Hypothyroid else 0)
     
-    # Q39 Is the patient currently using supplemental hormones for menopause?
-    options = ['0: Not taking', '1: Currently taking', '-']
-    state.x0_C = st.selectbox('Is the patient currently taking supplemental hormones for monpause?', options,
-                              options.index(state.x0_C) if state.x0_C else 0)
+    # # Q39 Is the patient currently using supplemental hormones for menopause?
+    # options = ['0: Not taking', '1: Currently taking', '-']
+    # state.x0_C = st.selectbox('Is the patient currently taking supplemental hormones for menopause?', options,
+    #                           options.index(state.x0_C) if state.x0_C else 0)
     
-    # Q40 Has the patient never used supplemental hormones for menopause
-    options = ['0: Has taken', '1: Has never taken', '-']
-    state.x0_N = st.selectbox('Has the patient never taken supplemental hormones for menopause?', options,
-                              options.index(state.x0_N) if state.x0_N else 0)
+    # # Q40 Has the patient never used supplemental hormones for menopause
+    # options = ['0: Has taken', '1: Has never taken', '-']
+    # state.x0_N = st.selectbox('Has the patient never taken supplemental hormones for menopause?', options,
+    #                           options.index(state.x0_N) if state.x0_N else 0)
     
-    # Q41 Has the patient previously used supplemental hormones for menopause
-    options = ['0: Has never taken', '1: Has previously taken', '-']
-    state.x0_P = st.selectbox('Has the patient previously taken supplemental hormonse for menopause?', options,
-                              options.index(state.x0_P) if state.x0_P else 0)
+    # # Q41 Has the patient previously used supplemental hormones for menopause
+    # options = ['0: Has never taken', '1: Has previously taken', '-']
+    # state.x0_P = st.selectbox('Has the patient previously taken supplemental hormonse for menopause?', options,
+    #                           options.index(state.x0_P) if state.x0_P else 0)
 
 
  ##!!!!!!!!!!!!!!!!!! Add button to progress to next page
@@ -488,10 +511,12 @@ def page_medinputs(state):
     state.hypertension_ynd[0],
     state.stroke_ynd[0], 
     state.asthma_ynd[0], 
-    state.thyroid_ynd[0], 
+    state.thyroid_ynd[0],
+    state.thyroid_problem[0], 
     state.arthritis_ynd[0],
     state.emphysema_ynd[0], 
     state.menopausal_status[0], 
+    state.hormone_therapy[0],
     state.num_pregnancies,
     state.asthma_med[0], 
     state.cholesterol_med[0], 
@@ -502,11 +527,11 @@ def page_medinputs(state):
     state.anxiety_med[0],
     state.diabetes_med[0], 
     state.sedative_med[0], 
-    state.thyroid_med[0], 
-    state.x0_Hypothyroid[0],
-    state.x0_C[0], 
-    state.x0_N[0], 
-    state.x0_P[0]]],
+    state.thyroid_med[0]]], 
+    # state.x0_Hypothyroid[0],
+    # state.x0_C[0], 
+    # state.x0_N[0], 
+    # state.x0_P[0]]],
     columns=[
     'sex',
     'age',
@@ -544,9 +569,11 @@ def page_medinputs(state):
     'stroke_ynd',
     'asthma_ynd',
     'thyroid_ynd',
+    'thyroid_problem',
     'arthritis_ynd',
     'emphysema_ynd',
     'menopausal_status',
+    'hormone_therapy',
     'num_pregnancies',
     'asthma_med',
     'cholesterol_med',
@@ -558,28 +585,40 @@ def page_medinputs(state):
     'diabetes_med',
     'sedative_med',
     'thyroid_med',
-    'x0_Hypothyroid',
-    'x0_C',
-    'x0_N',
-    'x0_P',
+    # 'x0_Hypothyroid',
+    # 'x0_C',
+    # 'x0_N',
+    # 'x0_P',
     ])
 
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model = joblib.load('se.joblib')
-        state.yse = model.predict(prediction_df)
+        model1 = joblib.load('se_pipeline.joblib')
+        state.yse = model1.predict(prediction_df)
         st.write(state.yse)
-       
 
-        model = joblib.load('waso.joblib')
-        state.ywaso = model.predict(prediction_df)
+        state.yse_probability = model1.predict_proba(prediction_df)
+        st.write(state.yse_probability)
+       
+        model2 = joblib.load('waso_pipeline.joblib')
+        state.ywaso = model2.predict(prediction_df)
         st.write(state.ywaso)
         
-        model = joblib.load('tst.joblib')
-        state.ytst = model.predict(prediction_df)
+        state.ywaso_probability = model2.predict_proba(prediction_df)
+        st.write(state.ywaso_probability)
+
+        model3 = joblib.load('tst_pipeline.joblib')
+        state.ytst = model3.predict(prediction_df)
         st.write(state.ytst)
 
+        state.ytst_probability = model3.predict_proba(prediction_df)
+        st.write(state.ytst_probability)
+
+        if (state.yse is not None and state.yse_probability is not None and state.ywaso is not None and state.ywaso_probability is not None and state.ytst is not None and state.ytst_probability is not None):
+            st.image('sleepy_koala.jpeg')
+        else:
+            st.image('awake_koala.jpeg')
 
     # for i in range(3):
     #     key = f"State value {i}"
@@ -596,23 +635,49 @@ def page_predictions(state):
     st.write("---")
 
 ##################### Predictions section #############################
-    st.title(":wrench: Sleep Predicitons")
+    st.title(":crystalball: Sleep Predicitons")
     st.write("---")
 
-    st.subheader("Seelp Health Score")
+    st.subheader("Sleep Health Summary")
+    total_probability_percentage = ((state.yse_probability[0,0] + state.ywaso_probability[0,0] + state.ytst_probability[0,0]) / 3 *100)
+    st.write(round(total_probability_percentage,0))
+    #state.nights = ((array1 + array2 + array3 ) * 31/3)
+    # st.write("It is likely you will have") 
+    # st.write(state.nights) 
+    # st.write("nights of good sleep in a month")
+    st.subheader("Sleep Health Score")
     
     
-    st.subheader("prediction 1")
+    st.subheader("Sleep Efficiency: are you likely to be spending enough time asleep as a proportion of the time you are in bed?")
     st.write(state.yse)
+    if state.yse == 0:
+        st.header(":star:")
+    elif state.ytst == 1:
+        st.header("It is likely that you will be spending time in bed awake")
+    st.write(state.yse_probability)
 
-    st.subheader("prediction 2")
+    st.subheader("Wake After Sleep Onset: are you likely to fall asleep quickly if you wake up during sleep?")
     st.write(state.ywaso)
+    if state.ywaso == 0:
+        st.header(":star:")
+    elif state.ytst == 1:
+        st.header("it is likely that if you wake up after falling sleep it takes you a while to nod off again")
+    st.write(state.ywaso_probability)
 
-    st.subheader("prediction 3")
+    st.subheader("Total Sleep Duration: are you likely to be spending enough time actually asleep?")
     st.write(state.ytst)
+    if state.ytst == 0:
+        st.header(":star:")
+    elif state.ytst == 1:
+        st.header("It is likely that you are not getting enough sleep")
+    st.write(state.ytst_probability)
+
+
 
     st.write("---")
 
+ 
+        
 ##################### Lifestyle section #############################
     
     st.title(":smiley:lifestyle Changes")
@@ -621,7 +686,7 @@ def page_predictions(state):
     state.cups_coffee = st.slider("Adjust the number of coffees you drink each day", 0, 15, state.cups_coffee)
     st.write(state.cups_coffee)
 
-    state.other_caffeine = st.slider("How many other caffeinated drinks do youhave each day in addition to coffee?", 0, 15, state.other_caffeine)
+    state.other_caffeine = st.slider("Adjust the number of other caffeinated drinks do you have each day in addition to coffee?", 0, 15, state.other_caffeine)
     st.write(state.other_caffeine)
 
     state.caffeine = state.cups_coffee + state.other_caffeine
@@ -639,6 +704,152 @@ def page_predictions(state):
     #     key = f"State value {i}"
     #     state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
 
+    prediction_df = pd.DataFrame([[
+    state.sex[0],
+    state.age, 
+    state.race[0], 
+    state.education_survey1[0], 
+    state.hdl, 
+    state.ldl, 
+    state.total_cholesterol, 
+    state.triglycerides,
+    state.heightcm, 
+    state.weightkg, 
+    state.hipgirthm, 
+    state.neckgirthm, 
+    state.waistgirthm, 
+    state.waisthip,
+    state.sitsysm, 
+    state.sitdiam, 
+    state.cups_coffee, 
+    state.caffeine, 
+    state.alcohol_wk, 
+    state.packs_week, 
+    state.pack_years, 
+    state.eval_general[0], 
+    state.eval_life[0], 
+    state.eval_health[0], 
+    state.naps,
+    state.snore_freq[0], 
+    state.snore_vol[0], 
+    state.choke_freq[0], 
+    state.apnea_freq[0],
+    state.awake_freq[0], 
+    state.nasal_cong_none[0], 
+    state.any_cvd[0], 
+    state.hypertension_ynd[0],
+    state.stroke_ynd[0], 
+    state.asthma_ynd[0], 
+    state.thyroid_ynd[0],
+    state.thyroid_problem[0], 
+    state.arthritis_ynd[0],
+    state.emphysema_ynd[0], 
+    state.menopausal_status[0], 
+    state.hormone_therapy[0],
+    state.num_pregnancies,
+    state.asthma_med[0], 
+    state.cholesterol_med[0], 
+    state.depression_med[0], 
+    state.htn_med[0],
+    state.decongestants_med[0], 
+    state.antihistamines_med[0], 
+    state.anxiety_med[0],
+    state.diabetes_med[0], 
+    state.sedative_med[0], 
+    state.thyroid_med[0]]], 
+    # state.x0_Hypothyroid[0],
+    # state.x0_C[0], 
+    # state.x0_N[0], 
+    # state.x0_P[0]]],
+    columns=[
+    'sex',
+    'age',
+    'race',
+    'education_survey1',
+    'hdl',
+    'ldl',
+    'total_cholesterol',
+    'triglycerides',
+    'heightcm',
+    'weightkg',
+    'hipgirthm',
+    'neckgirthm',
+    'waistgirthm',
+    'waisthip',
+    'sitsysm',
+    'sitdiam',
+    'cups_coffee',
+    'caffeine',
+    'alcohol_wk',
+    'packs_week',
+    'pack_years',
+    'eval_general',
+    'eval_life',
+    'eval_health',
+    'naps',
+    'snore_freq',
+    'snore_vol',
+    'choke_freq',
+    'apnea_freq',
+    'awake_freq',
+    'nasal_cong_none',
+    'any_cvd',
+    'hypertension_ynd',
+    'stroke_ynd',
+    'asthma_ynd',
+    'thyroid_ynd',
+    'thyroid_problem',
+    'arthritis_ynd',
+    'emphysema_ynd',
+    'menopausal_status',
+    'hormone_therapy',
+    'num_pregnancies',
+    'asthma_med',
+    'cholesterol_med',
+    'depression_med',
+    'htn_med',
+    'decongestants_med',
+    'antihistamines_med',
+    'anxiety_med',
+    'diabetes_med',
+    'sedative_med',
+    'thyroid_med',
+    # 'x0_Hypothyroid',
+    # 'x0_C',
+    # 'x0_N',
+    # 'x0_P',
+    ])
+
+    if st.button("How will these changes impact my sleep quality"):
+        st.dataframe(prediction_df)
+        model1 = joblib.load('se_pipeline.joblib')
+        state.yse = model1.predict(prediction_df)
+        st.write(state.yse)
+
+        state.yse_probability = model1.predict_proba(prediction_df)
+        st.write(state.yse_probability)
+       
+        model2 = joblib.load('waso_pipeline.joblib')
+        state.ywaso = model2.predict(prediction_df)
+        st.write(state.ywaso)
+        
+        state.ywaso_probability = model2.predict_proba(prediction_df)
+        st.write(state.ywaso_probability)
+
+        model3 = joblib.load('tst_pipeline.joblib')
+        state.ytst = model3.predict(prediction_df)
+        st.write(state.ytst)
+
+        state.ytst_probability = model3.predict_proba(prediction_df)
+        st.write(state.ytst_probability)
+
+        
+
+        if (state.yse is not None and state.yse_probability is not None and state.ywaso is not None and state.ywaso_probability is not None and state.ytst is not None and state.ytst_probability is not None):
+            st.image('sleepy_koala.jpeg')
+        else:
+            st.image('awake_koala.jpeg')
+    
 
 ######################## STATE VALUES ######################## 
 
@@ -685,9 +896,11 @@ def display_state_values(state):
     st.write('stroke_ynd', state.stroke_ynd)
     st.write('asthma_ynd', state.asthma_ynd)
     st.write('thyroid_ynd', state.thyroid_ynd)
+    st.write('thyroid_problem', state.thyroid_problem)
     st.write('arthritis_ynd', state.arthritis_ynd)
     st.write('emphysema_ynd', state.emphysema_ynd)
     st.write('menopausal_status', state.menopausal_status)
+    st.write('hormone_therapy', state.hormone_therapy)
     st.write('num_pregnancies', state.num_pregnancies)
     st.write('asthma_med', state.asthma_med)
     st.write('cholesterol_med', state.cholesterol_med)
@@ -699,10 +912,10 @@ def display_state_values(state):
     st.write('diabetes_med', state.diabetes_med)
     st.write('sedative_med', state.sedative_med)
     st.write('thyroid_med', state.thyroid_med)
-    st.write('x0_Hypothyroid', state.x0_Hypothyroid)
-    st.write('x0_C', state.x0_C)
-    st.write('x0_N', state.x0_N)
-    st.write('x0_P', state.x0_P)
+    # st.write('x0_Hypothyroid', state.x0_Hypothyroid)
+    # st.write('x0_C', state.x0_C)
+    # st.write('x0_N', state.x0_N)
+    # st.write('x0_P', state.x0_P)
 
     #Example states - to be removed at end
     # st.write("Input state:", state.input)
