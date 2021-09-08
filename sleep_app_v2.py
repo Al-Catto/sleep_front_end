@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 
 '''
-# Koala - The Sleep Prediction App
+# Koala :koala: - The Sleep Prediction App
 # '''
 st.image('koala.jpg')
 
@@ -42,36 +42,61 @@ def main():
 def page_method(state):
   
     st.title(":smiley: Getting Started")
-    st.header('Why is sleep so important?')
-    st.header('How can Koala help you?')
-    #st.header('How to use Koala')
+    st.title("Why is sleep so important?")
+    my_expander = st.expander("expand to get the low down")
+    my_expander.write("The relationship between sleep quality and overall pysical health is well documented. Sleep allows both the body ad the brain to recover overnight after the day's work is done. We all know what it feels like to awake refreshed and alert in the morning!")
+    my_expander.write("Unfortunately many of us expereince periods of sleep deficiency and it's important that we take action. While on the surface this can leave you tired and potentially stressed, prolonged sleep deprivation can contribute to a wide risk of physical issues including obesity, heart disease, high blood pressure, diabetes and stoke.")
+    my_expander.write("In today's fast paced world it is estaimted that around 19% of adults in the U.S. don't get enough sleep and this is generally relfective of the rest of the western world.")
+
+    st.title("How can :koala: help you?")
+    my_expander = st.expander("expand to find out what we do")
+    my_expander.write("Koala can help you by gathering key information on your health and lifestyle to make a prediction of your sleep quality")
+    my_expander.write("Once you have your prediction we'll help you understand key factors that you might be able to change to improve your sleep quality")
     
-    my_expander = st.expander("How to use Koala?")
-    my_expander.write('''We calculated your sleep quality based on important lifestyle factors and 
-    other information such as your age, gender and ethnicity. We compared this information from 
-    sleep studies tracking large numbers of individuals to generate an estimate of your sleep quality. 
-    We have defined sleep quality according to three commonly used metrics in scientific literature''')
+    st.title("How to use Koala?")
+    my_expander = st.expander("first time users expand to learn more")
+    my_expander.write("Koala is very simple to use, just enter the data requested in the user inputs section")
+    my_expander.write("All information requested in this section should be easy for you to provide")
+    my_expander.write("To increase the accuracy of the prediction and to get a good idea of your general health we suggest that you visit your GP and request that they complete the relevant tests to allow them to complete the medical professional inputs section")
+    my_expander.write("Please note the medical professional section is more involved and will require the support of a trained physician")
+    my_expander.write("Once all the information is gathered you can hit the button to make a prediction of your sleep quality")
+
+    st.title("How Koala makes your predication?")
+    my_expander = st.expander("Expand to find out how we predict")
+    my_expander.write('''We calculate your sleep quality based on important lifestyle factors and 
+    other information such as your age, gender and ethnicity. We compare this information to  
+    data recieved from sleep studies tracking large numbers of individuals. This comparrison allows us to generate an estimate of your sleep quality which is defined  according to three commonly used metrics in the scientific literature''')
     
     my_expander.write('''Sleep efficiency - the time you spend asleep as a proportion of the time you are in bed''')
     
-    my_expander.write('''Wake after sleep onset - how long does it take to fall asleep again if you wake up during your sleep''')
+    my_expander.write('''Wake after sleep onset - how long does it take you to fall asleep again if you wake up during your sleep''')
     
     my_expander.write('''Total sleep time - the amount of time you actually spend sleeping''')
     
-    my_expander.write('''If you had a star in each of these categories it means based on the information you provided, you were considered to be in the normal range.''')
+    my_expander.write('''If you have a star in each of these categories it means based on the information you provided, you were considered to be in the normal range.''')
+    
+    my_expander.write('''If you have a sleepy face in any of the categories it means there are some improvements that you might be abel to make.''')
+    
+    st.title("How do I know what to change?")
+    my_expander = st.expander("Exapnd for guidance on the lifestyle section")
+    my_expander.write("There are some key lifestyle factors taht you might be able to change to improve your sleep. To find out how these changes might change your sleep:")
+    my_expander.write("1. Head to the lifestyle section on the predictions page")
+    my_expander.write("2. Play with the sliders to set new values")
+    my_expander.write("3. Hit the button and see how these changes might influence your sleep quality")
 ######################## INPUT-USER PAGE ######################## 
 
 # 2. Create and curate the user inputs page
 def page_userinputs(state):
     st.title("Inputs - User")
     st.write("---")
-    display_state_values(state)
+    ############## STATE VALUES ############## 
+    #display_state_values(state)
 
-    st.write("---")
+    #st.write("---")
     #Q1: Gender (select) "sex"
     options = ['-', '0: Male', '1: Female']
     state.sex = st.selectbox('What is your gender?', options, options.index(state.sex) if state.sex else 1)
-    st.write(state.sex)
+    #st.write(state.sex)
 
     #Q2: Age (int input) "age"
     state.age = st.number_input("what is your age?", state.age or 41)
@@ -93,7 +118,7 @@ def page_userinputs(state):
     
     #Q6: Weight "weightkg"
     state.weightkg = st.number_input("what is your weight in kg?", state.weightkg or 65.0)
-    st.write(state.weightkg)
+    #st.write(state.weightkg)
     
     #Q7: Coffee Intake "cups_coffee"
     state.cups_coffee = st.slider("How many cups of coffee do you drink each day?", 0, 15, state.cups_coffee)
@@ -139,139 +164,152 @@ def page_userinputs(state):
     state.naps = st.slider("How many hours of sleep do you usually get during a typical week from daytime or evening naps?", 0, 20, state.naps)
     #st.write(state.naps)
     
-    ##!!!!!!!!!!!!!!!!!! Add button to progress to next page
+    ################# PREDICTION BUTTON #################
     
-    # prediction_df = pd.DataFrame([[
-    # state.sex[0],
-    # state.age, 
-    # state.race[0], 
-    # state.education_survey1[0], 
-    # state.hdl, 
-    # state.ldl, 
-    # state.total_cholesterol, 
-    # state.triglycerides,
-    # state.heightcm, 
-    # state.weightkg, 
-    # state.hipgirthm, 
-    # state.neckgirthm, 
-    # state.waistgirthm, 
-    # state.waisthip,
-    # state.sitsysm, 
-    # state.sitdiam, 
-    # state.cups_coffee, 
-    # state.caffeine, 
-    # state.alcohol_wk, 
-    # state.packs_week, 
-    # state.pack_years, 
-    # state.eval_general[0], 
-    # state.eval_life[0], 
-    # state.eval_health[0], 
-    # state.naps,
-    # state.snore_freq[0], 
-    # state.snore_vol[0], 
-    # state.choke_freq[0], 
-    # state.apnea_freq[0],
-    # state.awake_freq[0], 
-    # state.nasal_cong_none[0], 
-    # state.any_cvd[0], 
-    # state.hypertension_ynd[0],
-    # state.stroke_ynd[0], 
-    # state.asthma_ynd[0], 
-    # state.thyroid_ynd[0], 
-    # state.arthritis_ynd[0],
-    # state.emphysema_ynd[0], 
-    # state.menopausal_status[0], 
-    # state.num_pregnancies,
-    # state.asthma_med[0], 
-    # state.cholesterol_med[0], 
-    # state.depression_med[0], 
-    # state.htn_med[0],
-    # state.decongestants_med[0], 
-    # state.antihistamines_med[0], 
-    # state.anxiety_med[0],
-    # state.diabetes_med[0], 
-    # state.sedative_med[0], 
-    # state.thyroid_med[0], 
+    prediction_df = pd.DataFrame([[
+    state.sex[0],
+    state.age, 
+    state.race[0], 
+    state.education_survey1[0], 
+    state.hdl, 
+    state.ldl, 
+    state.total_cholesterol, 
+    state.triglycerides,
+    state.heightcm, 
+    state.weightkg, 
+    state.hipgirthm, 
+    state.neckgirthm, 
+    state.waistgirthm, 
+    state.waisthip,
+    state.sitsysm, 
+    state.sitdiam, 
+    state.cups_coffee, 
+    state.caffeine, 
+    state.alcohol_wk, 
+    state.packs_week, 
+    state.pack_years, 
+    state.eval_general[0], 
+    state.eval_life[0], 
+    state.eval_health[0], 
+    state.naps,
+    state.snore_freq[0], 
+    state.snore_vol[0], 
+    state.choke_freq[0], 
+    state.apnea_freq[0],
+    state.awake_freq[0], 
+    state.nasal_cong_none[0], 
+    state.any_cvd[0], 
+    state.hypertension_ynd[0],
+    state.stroke_ynd[0], 
+    state.asthma_ynd[0], 
+    state.thyroid_ynd[0],
+    state.thyroid_problem[0], 
+    state.arthritis_ynd[0],
+    state.emphysema_ynd[0], 
+    state.menopausal_status[0], 
+    state.hormone_therapy[0],
+    state.num_pregnancies,
+    state.asthma_med[0], 
+    state.cholesterol_med[0], 
+    state.depression_med[0], 
+    state.htn_med[0],
+    state.decongestants_med[0], 
+    state.antihistamines_med[0], 
+    state.anxiety_med[0],
+    state.diabetes_med[0], 
+    state.sedative_med[0], 
+    state.thyroid_med[0]]], 
     # state.x0_Hypothyroid[0],
     # state.x0_C[0], 
     # state.x0_N[0], 
     # state.x0_P[0]]],
-    # columns=[
-    # 'sex',
-    # 'age',
-    # 'race',
-    # 'education_survey1',
-    # 'hdl',
-    # 'ldl',
-    # 'total_cholesterol',
-    # 'triglycerides',
-    # 'heightcm',
-    # 'weightkg',
-    # 'hipgirthm',
-    # 'neckgirthm',
-    # 'waistgirthm',
-    # 'waisthip',
-    # 'sitsysm',
-    # 'sitdiam',
-    # 'cups_coffee',
-    # 'caffeine',
-    # 'alcohol_wk',
-    # 'packs_week',
-    # 'pack_years',
-    # 'eval_general',
-    # 'eval_life',
-    # 'eval_health',
-    # 'naps',
-    # 'snore_freq',
-    # 'snore_vol',
-    # 'choke_freq',
-    # 'apnea_freq',
-    # 'awake_freq',
-    # 'nasal_cong_none',
-    # 'any_cvd',
-    # 'hypertension_ynd',
-    # 'stroke_ynd',
-    # 'asthma_ynd',
-    # 'thyroid_ynd',
-    # 'arthritis_ynd',
-    # 'emphysema_ynd',
-    # 'menopausal_status',
-    # 'num_pregnancies',
-    # 'asthma_med',
-    # 'cholesterol_med',
-    # 'depression_med',
-    # 'htn_med',
-    # 'decongestants_med',
-    # 'antihistamines_med',
-    # 'anxiety_med',
-    # 'diabetes_med',
-    # 'sedative_med',
-    # 'thyroid_med',
+    columns=[
+    'sex',
+    'age',
+    'race',
+    'education_survey1',
+    'hdl',
+    'ldl',
+    'total_cholesterol',
+    'triglycerides',
+    'heightcm',
+    'weightkg',
+    'hipgirthm',
+    'neckgirthm',
+    'waistgirthm',
+    'waisthip',
+    'sitsysm',
+    'sitdiam',
+    'cups_coffee',
+    'caffeine',
+    'alcohol_wk',
+    'packs_week',
+    'pack_years',
+    'eval_general',
+    'eval_life',
+    'eval_health',
+    'naps',
+    'snore_freq',
+    'snore_vol',
+    'choke_freq',
+    'apnea_freq',
+    'awake_freq',
+    'nasal_cong_none',
+    'any_cvd',
+    'hypertension_ynd',
+    'stroke_ynd',
+    'asthma_ynd',
+    'thyroid_ynd',
+    'thyroid_problem',
+    'arthritis_ynd',
+    'emphysema_ynd',
+    'menopausal_status',
+    'hormone_therapy',
+    'num_pregnancies',
+    'asthma_med',
+    'cholesterol_med',
+    'depression_med',
+    'htn_med',
+    'decongestants_med',
+    'antihistamines_med',
+    'anxiety_med',
+    'diabetes_med',
+    'sedative_med',
+    'thyroid_med',
     # 'x0_Hypothyroid',
     # 'x0_C',
     # 'x0_N',
     # 'x0_P',
-    # ])
+    ])
 
 
-    # if st.button("make prediction"):
-    #     st.dataframe(prediction_df)
-    #     model = joblib.load('practice_waso.joblib')
-    #     y = model.predict(prediction_df)
+    if st.button("make prediction"):
+        st.dataframe(prediction_df)
+        model1 = joblib.load('se_pipeline.joblib')
+        state.yse = model1.predict(prediction_df)
+        #st.write(state.yse)
 
+        state.yse_probability = model1.predict_proba(prediction_df)
+        #st.write(state.yse_probability)
+       
+        model2 = joblib.load('waso_pipeline.joblib')
+        state.ywaso = model2.predict(prediction_df)
+        #st.write(state.ywaso)
+        
+        state.ywaso_probability = model2.predict_proba(prediction_df)
+        #st.write(state.ywaso_probability)
 
-    # options = ["Hello", "World", "Goodbye"]
-    # state.input = st.text_input("Set input value.", state.input or "")
-    # state.slider = st.slider("Set slider value.", 1, 10, state.slider)
-    # state.radio = st.radio("Set radio value.", options, options.index(state.radio) if state.radio else 0)
-    # state.checkbox = st.checkbox("Set checkbox value.", state.checkbox)
-    # state.selectbox = st.selectbox("Select value.", options, options.index(state.selectbox) if state.selectbox else 0)
-    # state.multiselect = st.multiselect("Select value(s).", options, state.multiselect)
+        model3 = joblib.load('tst_pipeline.joblib')
+        state.ytst = model3.predict(prediction_df)
+        #st.write(state.ytst)
 
-    # Dynamic state assignments
-    # for i in range(3):
-    #     key = f"State value {i}"
-    #     state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
+        state.ytst_probability = model3.predict_proba(prediction_df)
+        #st.write(state.ytst_probability)
+
+        if (state.yse is not None and state.yse_probability is not None and state.ywaso is not None and state.ywaso_probability is not None and state.ytst is not None and state.ytst_probability is not None):
+            st.image('sleepy_koala.jpeg')
+        else:
+            st.image('awake_koala.jpeg')
 
 ######################## INPUT - MEDICAL PROFESSIONAL ######################## 
 
@@ -279,7 +317,8 @@ def page_userinputs(state):
 def page_medinputs(state):
     st.title("Inputs - Medical Professional")
     st.write("---")
-    display_state_values(state)
+    ############## STATE VALUES ############## 
+    #display_state_values(state)
     
     st.write("---")
 
@@ -473,7 +512,7 @@ def page_medinputs(state):
     #                           options.index(state.x0_P) if state.x0_P else 0)
 
 
- ##!!!!!!!!!!!!!!!!!! Add button to progress to next page
+    ################# PREDICTION BUTTON #################
     
     prediction_df = pd.DataFrame([[
     state.sex[0],
@@ -596,24 +635,24 @@ def page_medinputs(state):
         st.dataframe(prediction_df)
         model1 = joblib.load('se_pipeline.joblib')
         state.yse = model1.predict(prediction_df)
-        st.write(state.yse)
+        #st.write(state.yse)
 
         state.yse_probability = model1.predict_proba(prediction_df)
-        st.write(state.yse_probability)
+        #st.write(state.yse_probability)
        
         model2 = joblib.load('waso_pipeline.joblib')
         state.ywaso = model2.predict(prediction_df)
-        st.write(state.ywaso)
+        #st.write(state.ywaso)
         
         state.ywaso_probability = model2.predict_proba(prediction_df)
-        st.write(state.ywaso_probability)
+        #st.write(state.ywaso_probability)
 
         model3 = joblib.load('tst_pipeline.joblib')
         state.ytst = model3.predict(prediction_df)
-        st.write(state.ytst)
+        #st.write(state.ytst)
 
         state.ytst_probability = model3.predict_proba(prediction_df)
-        st.write(state.ytst_probability)
+        #st.write(state.ytst_probability)
 
         if (state.yse is not None and state.yse_probability is not None and state.ywaso is not None and state.ywaso_probability is not None and state.ytst is not None and state.ytst_probability is not None):
             st.image('sleepy_koala.jpeg')
@@ -630,47 +669,58 @@ def page_medinputs(state):
 def page_predictions(state):
     st.title("Predictions")
     st.write("---")
-    display_state_values(state)
+    ############## STATE VALUES ############## 
+    #display_state_values(state)
 
     st.write("---")
 
 ##################### Predictions section #############################
-    st.title(":crystalball: Sleep Predicitons")
+    st.title(":koala: Sleep Predicitons")
     st.write("---")
 
-    st.subheader("Sleep Health Summary")
+    st.title("Sleep Health Summary Score")
     total_probability_percentage = ((state.yse_probability[0,0] + state.ywaso_probability[0,0] + state.ytst_probability[0,0]) / 3 *100)
-    st.write(round(total_probability_percentage,0))
+    st.title(round(total_probability_percentage,0))
+    st.header("above 50 is in normal range, below 50 suggests improvements could be made")
     #state.nights = ((array1 + array2 + array3 ) * 31/3)
     # st.write("It is likely you will have") 
     # st.write(state.nights) 
     # st.write("nights of good sleep in a month")
-    st.subheader("Sleep Health Score")
+    
     
     
     st.subheader("Sleep Efficiency: are you likely to be spending enough time asleep as a proportion of the time you are in bed?")
-    st.write(state.yse)
+    #st.write(state.yse)
     if state.yse == 0:
         st.header(":star:")
     elif state.ytst == 1:
+        st.title(":flushed:") 
         st.header("It is likely that you will be spending time in bed awake")
-    st.write(state.yse_probability)
+    yse_results = f"what's my probabilty of having enough sleep compared to the time i'm in bed? {state.yse_probability[0,0]*100} %" 
+    st.write(yse_results)
+    #st.write("what's my probabilty of having enough sleep compared to the time i'm in bed?") 
+    #st.write(state.yse_probability[0,0])
 
     st.subheader("Wake After Sleep Onset: are you likely to fall asleep quickly if you wake up during sleep?")
-    st.write(state.ywaso)
+    #st.write(state.ywaso)
     if state.ywaso == 0:
-        st.header(":star:")
+        st.title(":star:")
     elif state.ytst == 1:
-        st.header("it is likely that if you wake up after falling sleep it takes you a while to nod off again")
-    st.write(state.ywaso_probability)
+        st.title(":flushed:") 
+        st.header("It is likely that if you wake up after falling sleep it takes you a while to nod off again")
+    ywaso_results = f"Whats the percentage liklihood of waking up after you've fallen asleep{state.ywaso_probability[0,0]*100}%"
+    st.write(ywaso_results)
+    #st.write(state.ywaso_probability)
 
     st.subheader("Total Sleep Duration: are you likely to be spending enough time actually asleep?")
     st.write(state.ytst)
     if state.ytst == 0:
-        st.header(":star:")
+        st.title(":star:")
     elif state.ytst == 1:
+        st.title(":flushed:") 
         st.header("It is likely that you are not getting enough sleep")
-    st.write(state.ytst_probability)
+    ytst_results = f"Whats the percentage liklihood of getting enough total sleep{state.ytst_probability[0,0]*100}%"
+    st.write(ytst_results)
 
 
 
@@ -680,7 +730,7 @@ def page_predictions(state):
         
 ##################### Lifestyle section #############################
     
-    st.title(":smiley:lifestyle Changes")
+    st.title(":sleeping:lifestyle Changes")
     st.write("---")
     st.subheader(":coffee:Coffee")
     state.cups_coffee = st.slider("Adjust the number of coffees you drink each day", 0, 15, state.cups_coffee)
