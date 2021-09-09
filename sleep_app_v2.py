@@ -517,56 +517,56 @@ def page_medinputs(state):
     prediction_df = pd.DataFrame([[
     state.sex[0],
     state.age, 
-    state.race[0], 
-    state.education_survey1[0], 
-    state.hdl, 
-    state.ldl, 
-    state.total_cholesterol, 
-    state.triglycerides,
-    state.heightcm, 
+    ## state.race[0], 
+    ## state.education_survey1[0], 
+    ## state.hdl, 
+    ## state.ldl, 
+    ## state.total_cholesterol, 
+    ## state.triglycerides,
+    ## state.heightcm, 
     state.weightkg, 
-    state.hipgirthm, 
-    state.neckgirthm, 
-    state.waistgirthm, 
-    state.waisthip,
-    state.sitsysm, 
-    state.sitdiam, 
-    state.cups_coffee, 
+    ## state.hipgirthm, 
+    ## state.neckgirthm, 
+    ## state.waistgirthm, 
+    ## state.waisthip,
+    ## state.sitsysm, 
+    ## state.sitdiam, 
+    ## state.cups_coffee, 
     state.caffeine, 
     state.alcohol_wk, 
     state.packs_week, 
-    state.pack_years, 
-    state.eval_general[0], 
-    state.eval_life[0], 
-    state.eval_health[0], 
-    state.naps,
-    state.snore_freq[0], 
-    state.snore_vol[0], 
-    state.choke_freq[0], 
-    state.apnea_freq[0],
-    state.awake_freq[0], 
-    state.nasal_cong_none[0], 
-    state.any_cvd[0], 
-    state.hypertension_ynd[0],
-    state.stroke_ynd[0], 
-    state.asthma_ynd[0], 
-    state.thyroid_ynd[0],
-    state.thyroid_problem[0], 
-    state.arthritis_ynd[0],
-    state.emphysema_ynd[0], 
-    state.menopausal_status[0], 
-    state.hormone_therapy[0],
-    state.num_pregnancies,
-    state.asthma_med[0], 
-    state.cholesterol_med[0], 
-    state.depression_med[0], 
-    state.htn_med[0],
-    state.decongestants_med[0], 
-    state.antihistamines_med[0], 
-    state.anxiety_med[0],
-    state.diabetes_med[0], 
-    state.sedative_med[0], 
-    state.thyroid_med[0]]], 
+    ## state.pack_years, 
+    ## state.eval_general[0], 
+    ## state.eval_life[0], 
+    ## state.eval_health[0], 
+    state.naps]],
+    ## state.snore_freq[0], 
+    ## state.snore_vol[0], 
+    ## state.choke_freq[0], 
+    ## state.apnea_freq[0],
+    ## state.awake_freq[0], 
+    ## state.nasal_cong_none[0], 
+    ## state.any_cvd[0], 
+    ## state.hypertension_ynd[0],
+    ## state.stroke_ynd[0], 
+    ## state.asthma_ynd[0], 
+    ## state.thyroid_ynd[0],
+    ## state.thyroid_problem[0], 
+    ## state.arthritis_ynd[0],
+    ## state.emphysema_ynd[0], 
+    ## state.menopausal_status[0], 
+    ## state.hormone_therapy[0],
+    ## state.num_pregnancies,
+    ## state.asthma_med[0], 
+    ## state.cholesterol_med[0], 
+    ## state.depression_med[0], 
+    ## state.htn_med[0],
+    ## state.decongestants_med[0], 
+    ## state.antihistamines_med[0], 
+    ## state.anxiety_med[0],
+    ## state.diabetes_med[0], 
+    ## state.sedative_med[0], 
+    ## state.thyroid_med[0]]], 
     # state.x0_Hypothyroid[0],
     # state.x0_C[0], 
     # state.x0_N[0], 
@@ -574,56 +574,56 @@ def page_medinputs(state):
     columns=[
     'sex',
     'age',
-    'race',
-    'education_survey1',
-    'hdl',
-    'ldl',
-    'total_cholesterol',
-    'triglycerides',
-    'heightcm',
+    ##'race',
+    # 'education_survey1',
+    # 'hdl',
+    # 'ldl',
+    # 'total_cholesterol',
+    # 'triglycerides',
+    # 'heightcm',
     'weightkg',
-    'hipgirthm',
-    'neckgirthm',
-    'waistgirthm',
-    'waisthip',
-    'sitsysm',
-    'sitdiam',
-    'cups_coffee',
+    # 'hipgirthm',
+    # 'neckgirthm',
+    # 'waistgirthm',
+    # 'waisthip',
+    # 'sitsysm',
+    # 'sitdiam',
+    # 'cups_coffee',
     'caffeine',
     'alcohol_wk',
     'packs_week',
-    'pack_years',
-    'eval_general',
-    'eval_life',
-    'eval_health',
+    # 'pack_years',
+    # 'eval_general',
+    # 'eval_life',
+    # 'eval_health',
     'naps',
-    'snore_freq',
-    'snore_vol',
-    'choke_freq',
-    'apnea_freq',
-    'awake_freq',
-    'nasal_cong_none',
-    'any_cvd',
-    'hypertension_ynd',
-    'stroke_ynd',
-    'asthma_ynd',
-    'thyroid_ynd',
-    'thyroid_problem',
-    'arthritis_ynd',
-    'emphysema_ynd',
-    'menopausal_status',
-    'hormone_therapy',
-    'num_pregnancies',
-    'asthma_med',
-    'cholesterol_med',
-    'depression_med',
-    'htn_med',
-    'decongestants_med',
-    'antihistamines_med',
-    'anxiety_med',
-    'diabetes_med',
-    'sedative_med',
-    'thyroid_med',
+    ## 'snore_freq',
+    ## 'snore_vol',
+    ## 'choke_freq',
+    ## 'apnea_freq',
+    ## 'awake_freq',
+    ## 'nasal_cong_none',
+    ## 'any_cvd',
+    ## 'hypertension_ynd',
+    ## 'stroke_ynd',
+    ## 'asthma_ynd',
+    ## 'thyroid_ynd',
+    ## 'thyroid_problem',
+    ## 'arthritis_ynd',
+    ## 'emphysema_ynd',
+    ## 'menopausal_status',
+    ## 'hormone_therapy',
+    ## 'num_pregnancies',
+    ## 'asthma_med',
+    ## 'cholesterol_med',
+    ## 'depression_med',
+    ## 'htn_med',
+    ## 'decongestants_med',
+    ## 'antihistamines_med',
+    ## 'anxiety_med',
+    ## 'diabetes_med',
+    ## 'sedative_med',
+    ## 'thyroid_med',
     # 'x0_Hypothyroid',
     # 'x0_C',
     # 'x0_N',
@@ -667,12 +667,12 @@ def page_medinputs(state):
 
 # 4. Create and curate the predictions page
 def page_predictions(state):
-    st.title("Predictions")
-    st.write("---")
+    #st.title("Predictions")
+    #st.write("---")
     ############## STATE VALUES ############## 
     #display_state_values(state)
 
-    st.write("---")
+    #st.write("---")
 
 ##################### Predictions section #############################
     st.title(":koala: Sleep Predicitons")
@@ -680,8 +680,9 @@ def page_predictions(state):
 
     st.title("Sleep Health Summary Score")
     total_probability_percentage = ((state.yse_probability[0,0] + state.ywaso_probability[0,0] + state.ytst_probability[0,0]) / 3 *100)
-    st.title(round(total_probability_percentage,0))
-    st.header("above 50 is in normal range, below 50 suggests improvements could be made")
+    probability_percent = f"{round(total_probability_percentage,0)}%"
+    st.title(probability_percent)
+    st.subheader("(above 50 is in normal range, below 50 suggests improvements could be made)")
     #state.nights = ((array1 + array2 + array3 ) * 31/3)
     # st.write("It is likely you will have") 
     # st.write(state.nights) 
@@ -689,10 +690,10 @@ def page_predictions(state):
     
     
     
-    st.subheader("Sleep Efficiency: are you likely to be spending enough time asleep as a proportion of the time you are in bed?")
+    st.title("Sleep Efficiency: are you likely to be spending enough time asleep as a proportion of the time you are in bed?")
     #st.write(state.yse)
     if state.yse == 0:
-        st.header(":star:")
+        st.header(":zzz:")
     elif state.ytst == 1:
         st.title(":flushed:") 
         st.header("It is likely that you will be spending time in bed awake")
@@ -701,25 +702,25 @@ def page_predictions(state):
     #st.write("what's my probabilty of having enough sleep compared to the time i'm in bed?") 
     #st.write(state.yse_probability[0,0])
 
-    st.subheader("Wake After Sleep Onset: are you likely to fall asleep quickly if you wake up during sleep?")
+    st.title("Wake After Sleep Onset: are you likely to fall asleep quickly if you wake up during sleep?")
     #st.write(state.ywaso)
     if state.ywaso == 0:
-        st.title(":star:")
+        st.title(":zzz:")
     elif state.ytst == 1:
         st.title(":flushed:") 
         st.header("It is likely that if you wake up after falling sleep it takes you a while to nod off again")
-    ywaso_results = f"Whats the percentage liklihood of waking up after you've fallen asleep{state.ywaso_probability[0,0]*100}%"
+    ywaso_results = f"Whats the percentage liklihood of waking up after you've fallen asleep {state.ywaso_probability[0,0]*100}%"
     st.write(ywaso_results)
     #st.write(state.ywaso_probability)
 
-    st.subheader("Total Sleep Duration: are you likely to be spending enough time actually asleep?")
-    st.write(state.ytst)
+    st.title("Total Sleep Duration: are you likely to be spending enough time actually asleep?")
+    #st.write(state.ytst)
     if state.ytst == 0:
-        st.title(":star:")
+        st.title(":zzz:")
     elif state.ytst == 1:
         st.title(":flushed:") 
         st.header("It is likely that you are not getting enough sleep")
-    ytst_results = f"Whats the percentage liklihood of getting enough total sleep{state.ytst_probability[0,0]*100}%"
+    ytst_results = f"Whats the percentage liklihood of getting enough total sleep {state.ytst_probability[0,0]*100}%"
     st.write(ytst_results)
 
 
@@ -737,16 +738,23 @@ def page_predictions(state):
     st.write(state.cups_coffee)
 
     state.other_caffeine = st.slider("Adjust the number of other caffeinated drinks do you have each day in addition to coffee?", 0, 15, state.other_caffeine)
-    st.write(state.other_caffeine)
+    #st.write(state.other_caffeine)
 
     state.caffeine = state.cups_coffee + state.other_caffeine
-    st.write(state.caffeine)
+    #st.write(state.caffeine)
 
     state.weightkg = st.slider("intro text", 0.0, 100.0, state.weightkg)
-    st.write(state.weightkg)
+    #st.write(state.weightkg)
     
     state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each week?", 0, 20, state.alcohol_wk)
-    st.write(state.alcohol_wk)
+    #st.write(state.alcohol_wk)
+
+    options = ['-','0: No', '1: Yes']
+    state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 1)
+    #st.write(state.smoke)
+    
+    state.packs_week = st.slider("If yes how many packs a week do you smoke?", 0, 30, state.packs_week)
+    #st.write(state.packs_week)
     
 
     # Dynamic state assignments
@@ -962,6 +970,11 @@ def display_state_values(state):
     st.write('diabetes_med', state.diabetes_med)
     st.write('sedative_med', state.sedative_med)
     st.write('thyroid_med', state.thyroid_med)
+    #Predictions  
+    state.yse
+    state.ywaso
+    state.ytst
+
     # st.write('x0_Hypothyroid', state.x0_Hypothyroid)
     # st.write('x0_C', state.x0_C)
     # st.write('x0_N', state.x0_N)
