@@ -1,3 +1,4 @@
 streamlit
 joblib
 pandas
+sklearn==0.0

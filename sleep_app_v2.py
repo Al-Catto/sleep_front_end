@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit.hashing import _CodeHasher
 import pandas as pd
 import joblib
+import sklearn
 
 '''
 # Koala :koala: - The Sleep Prediction App
@@ -18,6 +19,14 @@ except ModuleNotFoundError:
     from streamlit.server.server import Server
 
 ######################## MAIN ########################  
+def _get_state(hash_funcs=None):
+    session = _get_session()
+
+    if not hasattr(session, "_custom_session_state"):
+        session._custom_session_state = _SessionState(session, hash_funcs)
+
+    return session._custom_session_state
+
 def main():
     state = _get_state()
     pages = {
@@ -61,8 +70,8 @@ def page_method(state):
     my_expander.write("Please note the medical professional section is more involved and will require the support of a trained physician")
     my_expander.write("Once all the information is gathered you can hit the button to make a prediction of your sleep quality")
 
-    st.title("How Koala makes your predication?")
-    my_expander = st.expander("Expand to find out how we predict")
+    st.title("How Koala makes your prediction?")
+    my_expander = st.expander("expand to find out how we predict")
     my_expander.write('''We calculate your sleep quality based on important lifestyle factors and 
     other information such as your age, gender and ethnicity. We compare this information to  
     data recieved from sleep studies tracking large numbers of individuals. This comparrison allows us to generate an estimate of your sleep quality which is defined  according to three commonly used metrics in the scientific literature''')
@@ -78,8 +87,8 @@ def page_method(state):
     my_expander.write('''If you have a sleepy face in any of the categories it means there are some improvements that you might be abel to make.''')
     
     st.title("How do I know what to change?")
-    my_expander = st.expander("Exapnd for guidance on the lifestyle section")
-    my_expander.write("There are some key lifestyle factors taht you might be able to change to improve your sleep. To find out how these changes might change your sleep:")
+    my_expander = st.expander("expand for guidance on the lifestyle section")
+    my_expander.write("There are some key lifestyle factors that you might be able to change to improve your sleep. To find out how these changes might change your sleep:")
     my_expander.write("1. Head to the lifestyle section on the predictions page")
     my_expander.write("2. Play with the sliders to set new values")
     my_expander.write("3. Hit the button and see how these changes might influence your sleep quality")
@@ -92,7 +101,7 @@ def page_userinputs(state):
     ############## STATE VALUES ############## 
     #display_state_values(state)
 
-    #st.write("---")
+    
     #Q1: Gender (select) "sex"
     options = ['-', '0: Male', '1: Female']
     state.sex = st.selectbox('What is your gender?', options, options.index(state.sex) if state.sex else 1)
@@ -117,7 +126,7 @@ def page_userinputs(state):
     #st.write(state.heightcm)
     
     #Q6: Weight "weightkg"
-    state.weightkg = st.number_input("what is your weight in kg?", state.weightkg or 65.0)
+    state.weightkg = st.number_input("what is your weight in kg?", state.weightkg or 80.0)
     #st.write(state.weightkg)
     
     #Q7: Coffee Intake "cups_coffee"
@@ -167,139 +176,142 @@ def page_userinputs(state):
     ################# PREDICTION BUTTON #################
     
     prediction_df = pd.DataFrame([[
-    state.sex[0],
-    state.age, 
-    state.race[0], 
-    state.education_survey1[0], 
-    state.hdl, 
-    state.ldl, 
-    state.total_cholesterol, 
-    state.triglycerides,
-    state.heightcm, 
-    state.weightkg, 
-    state.hipgirthm, 
-    state.neckgirthm, 
-    state.waistgirthm, 
-    state.waisthip,
-    state.sitsysm, 
-    state.sitdiam, 
-    state.cups_coffee, 
-    state.caffeine, 
-    state.alcohol_wk, 
-    state.packs_week, 
-    state.pack_years, 
-    state.eval_general[0], 
-    state.eval_life[0], 
-    state.eval_health[0], 
-    state.naps,
-    state.snore_freq[0], 
-    state.snore_vol[0], 
-    state.choke_freq[0], 
-    state.apnea_freq[0],
-    state.awake_freq[0], 
-    state.nasal_cong_none[0], 
-    state.any_cvd[0], 
-    state.hypertension_ynd[0],
-    state.stroke_ynd[0], 
-    state.asthma_ynd[0], 
-    state.thyroid_ynd[0],
-    state.thyroid_problem[0], 
-    state.arthritis_ynd[0],
-    state.emphysema_ynd[0], 
-    state.menopausal_status[0], 
-    state.hormone_therapy[0],
-    state.num_pregnancies,
-    state.asthma_med[0], 
-    state.cholesterol_med[0], 
-    state.depression_med[0], 
-    state.htn_med[0],
-    state.decongestants_med[0], 
-    state.antihistamines_med[0], 
-    state.anxiety_med[0],
-    state.diabetes_med[0], 
-    state.sedative_med[0], 
-    state.thyroid_med[0]]], 
+    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
+
+    # prediction_df = pd.DataFrame([[
+    # state.sex[0],
+    # state.age, 
+    # # state.race[0], 
+    # # state.education_survey1[0], 
+    # # state.hdl, 
+    # # state.ldl, 
+    # # state.total_cholesterol, 
+    # # state.triglycerides,
+    # # state.heightcm, 
+    # state.weightkg, 
+    # # state.hipgirthm, 
+    # # state.neckgirthm, 
+    # # state.waistgirthm, 
+    # # state.waisthip,
+    # # state.sitsysm, 
+    # # state.sitdiam, 
+    # # state.cups_coffee, 
+    # state.caffeine, 
+    # state.alcohol_wk, 
+    # state.packs_week, 
+    # state.pack_years, 
+    # state.eval_general[0], 
+    # state.eval_life[0], 
+    # state.eval_health[0], 
+  #  state.naps]],
+    # state.snore_freq[0], 
+    # state.snore_vol[0], 
+    # state.choke_freq[0], 
+    # state.apnea_freq[0],
+    # state.awake_freq[0], 
+    # state.nasal_cong_none[0], 
+    # state.any_cvd[0], 
+    # state.hypertension_ynd[0],
+    # state.stroke_ynd[0], 
+    # state.asthma_ynd[0], 
+    # state.thyroid_ynd[0],
+    # state.thyroid_problem[0], 
+    # state.arthritis_ynd[0],
+    # state.emphysema_ynd[0], 
+    # state.menopausal_status[0], 
+    # state.hormone_therapy[0],
+    # state.num_pregnancies,
+    # state.asthma_med[0], 
+    # state.cholesterol_med[0], 
+    # state.depression_med[0], 
+    # state.htn_med[0],
+    # state.decongestants_med[0], 
+    # state.antihistamines_med[0], 
+    # state.anxiety_med[0],
+    # state.diabetes_med[0], 
+    # state.sedative_med[0], 
+    # state.thyroid_med[0]]], 
     # state.x0_Hypothyroid[0],
     # state.x0_C[0], 
     # state.x0_N[0], 
     # state.x0_P[0]]],
-    columns=[
-    'sex',
-    'age',
-    'race',
-    'education_survey1',
-    'hdl',
-    'ldl',
-    'total_cholesterol',
-    'triglycerides',
-    'heightcm',
-    'weightkg',
-    'hipgirthm',
-    'neckgirthm',
-    'waistgirthm',
-    'waisthip',
-    'sitsysm',
-    'sitdiam',
-    'cups_coffee',
-    'caffeine',
-    'alcohol_wk',
-    'packs_week',
-    'pack_years',
-    'eval_general',
-    'eval_life',
-    'eval_health',
-    'naps',
-    'snore_freq',
-    'snore_vol',
-    'choke_freq',
-    'apnea_freq',
-    'awake_freq',
-    'nasal_cong_none',
-    'any_cvd',
-    'hypertension_ynd',
-    'stroke_ynd',
-    'asthma_ynd',
-    'thyroid_ynd',
-    'thyroid_problem',
-    'arthritis_ynd',
-    'emphysema_ynd',
-    'menopausal_status',
-    'hormone_therapy',
-    'num_pregnancies',
-    'asthma_med',
-    'cholesterol_med',
-    'depression_med',
-    'htn_med',
-    'decongestants_med',
-    'antihistamines_med',
-    'anxiety_med',
-    'diabetes_med',
-    'sedative_med',
-    'thyroid_med',
-    # 'x0_Hypothyroid',
+    # columns=[
+    # 'sex',
+    # 'age',
+    # # 'race',
+    # # 'education_survey1',
+    # # 'hdl',
+    # # 'ldl',
+    # # 'total_cholesterol',
+    # # 'triglycerides',
+    # # 'heightcm',
+    # 'weightkg',
+    # # 'hipgirthm',
+    # # 'neckgirthm',
+    # # 'waistgirthm',
+    # # 'waisthip',
+    # # 'sitsysm',
+    # # 'sitdiam',
+    # # 'cups_coffee',
+    # 'caffeine',
+    # 'alcohol_wk',
+    # 'packs_week',
+    # # 'pack_years',
+    # # 'eval_general',
+    # # 'eval_life',
+    # # 'eval_health',
+    # 'naps'
+    # # 'snore_freq',
+    # # 'snore_vol',
+    # # 'choke_freq',
+    # # 'apnea_freq',
+    # # 'awake_freq',
+    # 'nasal_cong_none',
+    # 'any_cvd',
+    # 'hypertension_ynd',
+    # 'stroke_ynd',
+    # 'asthma_ynd',
+    # 'thyroid_ynd',
+    # 'thyroid_problem',
+    # 'arthritis_ynd',
+    # 'emphysema_ynd',
+    # 'menopausal_status',
+    # 'hormone_therapy',
+    # 'num_pregnancies',
+    # 'asthma_med',
+    # 'cholesterol_med',
+    # 'depression_med',
+    # 'htn_med',
+    # 'decongestants_med',
+    # 'antihistamines_med',
+    # 'anxiety_med',
+    # 'diabetes_med',
+    # 'sedative_med',
+    # 'thyroid_med',
+    # # 'x0_Hypothyroid',
     # 'x0_C',
     # 'x0_N',
     # 'x0_P',
-    ])
+   # ])
 
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model1 = joblib.load('se_pipeline.joblib')
+        model1 = joblib.load('sleep_models/se_pipeline.joblib')
         state.yse = model1.predict(prediction_df)
         #st.write(state.yse)
 
         state.yse_probability = model1.predict_proba(prediction_df)
         #st.write(state.yse_probability)
        
-        model2 = joblib.load('waso_pipeline.joblib')
+        model2 = joblib.load('sleep_models/waso_pipeline.joblib')
         state.ywaso = model2.predict(prediction_df)
         #st.write(state.ywaso)
         
         state.ywaso_probability = model2.predict_proba(prediction_df)
         #st.write(state.ywaso_probability)
 
-        model3 = joblib.load('tst_pipeline.joblib')
+        model3 = joblib.load('sleep_models/tst_pipeline.joblib')
         state.ytst = model3.predict(prediction_df)
         #st.write(state.ytst)
 
@@ -321,174 +333,190 @@ def page_medinputs(state):
     #display_state_values(state)
     
     st.write("---")
+    cholesterol_expander = st.expander(label="Cholesterol data")
+    with cholesterol_expander:
 
-    #my_expander2 = st.expander("Medical professional inputs")
+        # Q1 HDL Levels
+        state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=44) #53 
+        st.write(state.hdl)
+    
+        # Q2 LDL Levels
+        state.ldl = st.number_input("What is the patient's LDL level?", state.ldl, value=135) # 113
+        st.write(state.ldl)
+        
+        # Q3 Total Cholestorol
+        state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol, value=208) #194
+        st.write(state.total_cholesterol)
+        
+        # Q4 Triglycerides
+        state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides, value=147) #141
+        st.write(state.triglycerides)
+    
+    body_stats_expander = st.expander(label="Anthropomorphic measurements")
+    with body_stats_expander:
 
-    # Q1 HDL Levels
-    state.hdl = st.number_input("What is the patient's HDL level?",  state.hdl, value=44) #53 
-    st.write(state.hdl)
+        # Q5 Hip Girth (metres)
+        state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm, value=106) # 110
+        
+        # Q6 Neck Girth (metres)
+        state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm, value=36) #38
+        st.write(state.neckgirthm)
+        # Q7 Waist Girth (metres)
+        state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm, value=91) #101
+        
+        # Q8 Waist Hip Ratio
+        state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip, value=0.8585) #0.9
     
-    # Q2 LDL Levels
-    state.ldl = st.number_input("What is the patient's LDL level?", state.ldl, value=135) # 113
-    st.write(state.ldl)
+    blood_pressure_expander = st.expander(label="Blood pressure data")
+    with blood_pressure_expander:
     
-    # Q3 Total Cholestorol
-    state.total_cholesterol = st.number_input("What is the patient's total cholesterol level?", state.total_cholesterol, value=208) #194
-    st.write(state.total_cholesterol)
+        # Q9 Sit Sysm
+        state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm, value=116.0)#127
+        
+        # Q10 Sit Diam
+        state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam, value=68)#76
+        
+    medical_eval_expander = st.expander(label="Medical evaluation data")
+    with medical_eval_expander:
+        # Q11 General Evaluation of the patient's sleep satisfaction
+        options = ['1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never', '-']
+        state.eval_general = st.selectbox('How often is the patient satisfied with their sleep?',options, options.index(state.eval_general) if state.eval_general else 0)
+        
+        # Q12 General Evaluation of the patient's health
+        options = ['1: Excellent', '2: Very Good', '3: Good', '4: Fair', '5: Poor', '-']
+        state.eval_health = st.selectbox("What is your general evaluation of the patient's health?", options, options.index(state.eval_health) if state.eval_health else 0)
+        
+        # Q13 Snoring Frequency
+        options = ['1: Never or rarely', '2: Sometimes', '3: At least once a week', '4: Several (3 to 5) nights per week', '5: Every, or almost every, night', "9: Don't know", '-']
+        state.snore_freq = st.selectbox('How often does the patient snore?', options, options.index(state.snore_freq) if state.snore_freq else 0)
+        
+        # Q14 Snoring Volume
+        options = ['1: Slightly louder than heavy breathing', '2: As loud as mumbling or talking', '3: Louder than talking', '4: Very loud, can be heard through a closed door',
+                '9: Do not know', '8: Does not apply', '-']
+        state.snore_vol = st.selectbox("How loud is the patient's snoring?", options, options.index(state.snore_vol) if state.snore_vol else 0)
+        
+        # Q15 Frequency of choking during sleep
+        options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
+        state.choke_freq = st.selectbox("How often does the patient gasp, choke, or make snorting sounds during sleep?", options, 
+                                        options.index(state.choke_freq) if state.choke_freq else 0)
+        
+        # Q16 Sleep apnea
+        options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
+        state.apnea_freq = st.selectbox("How often does the patience experience moments during sleep where they stop breathing, or breathe abnormally?", options,
+                                        options.index(state.apnea_freq) if state.apnea_freq else 0)
+        
+        # Q17 Frequency of awakening during the night
+        options = ["1: Never or rarely", "2: Sometimes", "3: At least once a week", "4: Several nights a week", "5: Every, or almost every, night", "9: Don't know", '-']
+        state.awake_freq = st.selectbox("How often does the patient wake suddenly with the feeling of gasping or choking?", options,
+                                        options.index(state.awake_freq) if state.awake_freq else 0)
+        
+        # Q18 No Nasal Congestion
+        options = ['0: No', '1: Yes', '-']
+        state.nasal_cong_none = st.selectbox("Does the patient have no nasal congestion today or tonight?", options, 
+                                            options.index(state.nasal_cong_none) if state.nasal_cong_none else 0)
     
-    # Q4 Triglycerides
-    state.triglycerides = st.number_input("What is the patient's triglyceride level?", state.triglycerides, value=147) #141
-    st.write(state.triglycerides)
-    
-    # Q5 Hip Girth (metres)
-    state.hipgirthm = st.number_input("What is the patients hip girth (in metres)?", state.hipgirthm, value=106) # 110
-    
-    # Q6 Neck Girth (metres)
-    state.neckgirthm = st.number_input("What is the patient's neck girth (in metres)?", state.neckgirthm, value=36) #38
-    st.write(state.neckgirthm)
-    # Q7 Waist Girth (metres)
-    state.waistgirthm = st.number_input("What is the patient's waist girth (in metres)?", state.waistgirthm, value=91) #101
-    
-    # Q8 Waist Hip Ratio
-    state.waisthip = st.number_input("What is the patient's waist to hip ratio?", state.waisthip, value=0.8585) #0.9
-    
-    # Q9 Sit Sysm
-    state.sitsysm = st.number_input("What is the mean of the patient's seated systolic measures?", state.sitsysm, value=116)#127
-    
-    # Q10 Sit Diam
-    state.sitdiam = st.number_input("What is the mean of the patient's seated diastolic pressures?", state.sitdiam, value=68)#76
-    
-    # Q11 General Evaluation of the patient's sleep satisfaction
-    options = ['1: Most of the time', '2: Some of the time', '3: Not usually', '4: Never', '-']
-    state.eval_general = st.selectbox('How often is the patient satisfied with their sleep?',options, options.index(state.eval_general) if state.eval_general else 0)
-    
-    # Q12 General Evaluation of the patient's health
-    options = ['1: Excellent', '2: Very Good', '3: Good', '4: Fair', '5: Poor', '-']
-    state.eval_health = st.selectbox("What is your general evaluation of the patient's health?", options, options.index(state.eval_health) if state.eval_health else 0)
-    
-    # Q13 Snoring Frequency
-    options = ['1: Never or rarely', '2: Sometimes', '3: At least once a week', '4: Several (3 to 5) nights per week', '5: Every, or almost every, night', "9: Don't know", '-']
-    state.snore_freq = st.selectbox('How often does the patient snore?', options, options.index(state.snore_freq) if state.snore_freq else 0)
-    
-    # Q14 Snoring Volume
-    options = ['1: Slightly louder than heavy breathing', '2: As loud as mumbling or talking', '3: Louder than talking', '4: Very loud, can be heard through a closed door',
-               '9: Do not know', '8: Does not apply', '-']
-    state.snore_vol = st.selectbox("How loud is the patient's snoring?", options, options.index(state.snore_vol) if state.snore_vol else 0)
-    
-    # Q15 Frequency of choking during sleep
-    options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
-    state.choke_freq = st.selectbox("How often does the patient gasp, choke, or make snorting sounds during sleep?", options, 
-                                    options.index(state.choke_freq) if state.choke_freq else 0)
-    
-    # Q16 Sleep apnea
-    options = ["1: Never or rarely", '2: Sometimes', '3: At least once a week', '4: Several nights per week', "9: Don't know", '-']
-    state.apnea_freq = st.selectbox("How often does the patience experience moments during sleep where they stop breathing, or breathe abnormally?", options,
-                                    options.index(state.apnea_freq) if state.apnea_freq else 0)
-    
-    # Q17 Frequency of awakening during the night
-    options = ["1: Never or rarely", "2: Sometimes", "3: At least once a week", "4: Several nights a week", "5: Every, or almost every, night", "9: Don't know", '-']
-    state.awake_freq = st.selectbox("How often does the patient wake suddenly with the feeling of gasping or choking?", options,
-                                    options.index(state.awake_freq) if state.awake_freq else 0)
-    
-    # Q18 No Nasal Congestion
-    options = ['0: No', '1: Yes', '-']
-    state.nasal_cong_none = st.selectbox("Does the patient have no nasal congestion today or tonight?", options, 
-                                         options.index(state.nasal_cong_none) if state.nasal_cong_none else 0)
-    
-    # Q19 Any Cardiovascular Disease Since Baseline
-    options = ['0: No', '1: Yes', '-']
-    state.any_cvd = st.selectbox("Has the patient experienced any Cardiovascular Disease since their baseline Polysomnogram?",
-                                 options, options.index(state.any_cvd) if state.any_cvd else 0)
-    
-    # Q20 Hypertension: Self-reported diagnosis by a physician
-    options = ['0: No', '1: Yes', '-']
-    state.hypertension_ynd = st.selectbox("Does the patient have either high blood pressure or hypertension?", options,
-                                          options.index(state.hypertension_ynd) if state.hypertension_ynd else 0)
-    
-    # Q21 Stroke
-    options = ['0: No', '1: Yes', '-']
-    state.stroke_ynd = st.selectbox("Has the patient ever had a stroke?", options, options.index(state.stroke_ynd) if state.stroke_ynd else 0)
-    
-    # Q22 Asthma
-    options = ['0: No', '1: Yes', '-']
-    state.asthma_ynd = st.selectbox("Has the patient ever had asthma?", options, options.index(state.asthma_ynd) if state.asthma_ynd else 0)
-    
-    # Q23 Thyroid
-    options = ['0: No', '1: Yes', '-']
-    state.thyroid_ynd = st.selectbox("Does the patient have a thyroid problem?", options, options.index(state.thyroid_ynd) if state.thyroid_ynd else 0)
-    
-    # Q23b (NEW) Thyroid_problem 
-    options = ['0: No', '1: Yes', '-']
-    state.thyroid_problem = st.selectbox("Does the patient have a hypothyroidism?", options, options.index(state.thyroid_problem) if state.thyroid_problem else 0)
+    disease_pathologies_expander = st.expander(label="Medical conditions data")
+    with disease_pathologies_expander:
+        
+        # Q19 Any Cardiovascular Disease Since Baseline
+        options = ['0: No', '1: Yes', '-']
+        state.any_cvd = st.selectbox("Has the patient experienced any Cardiovascular Disease since their baseline Polysomnogram?",
+                                    options, options.index(state.any_cvd) if state.any_cvd else 0)
+        
+        # Q20 Hypertension: Self-reported diagnosis by a physician
+        options = ['0: No', '1: Yes', '-']
+        state.hypertension_ynd = st.selectbox("Does the patient have either high blood pressure or hypertension?", options,
+                                            options.index(state.hypertension_ynd) if state.hypertension_ynd else 0)
+        
+        # Q21 Stroke
+        options = ['0: No', '1: Yes', '-']
+        state.stroke_ynd = st.selectbox("Has the patient ever had a stroke?", options, options.index(state.stroke_ynd) if state.stroke_ynd else 0)
+        
+        # Q22 Asthma
+        options = ['0: No', '1: Yes', '-']
+        state.asthma_ynd = st.selectbox("Has the patient ever had asthma?", options, options.index(state.asthma_ynd) if state.asthma_ynd else 0)
+        
+        # Q23 Thyroid
+        options = ['0: No', '1: Yes', '-']
+        state.thyroid_ynd = st.selectbox("Does the patient have a thyroid problem?", options, options.index(state.thyroid_ynd) if state.thyroid_ynd else 0)
+        
+        # Q23b (NEW) Thyroid_problem 
+        options = ['0: No', '1: Yes', '-']
+        state.thyroid_problem = st.selectbox("Does the patient have a hypothyroidism?", options, options.index(state.thyroid_problem) if state.thyroid_problem else 0)
 
-    # Q24 Arthritis
-    options = ['0: No', '1: Yes', '-']
-    state.arthritis_ynd = st.selectbox("Does the patient have arthritis?", options, options.index(state.arthritis_ynd) if state.arthritis_ynd else 0)
+        # Q24 Arthritis
+        options = ['0: No', '1: Yes', '-']
+        state.arthritis_ynd = st.selectbox("Does the patient have arthritis?", options, options.index(state.arthritis_ynd) if state.arthritis_ynd else 0)
+        
+        # Q25 Emphysema
+        options = ['0: No', '1: Yes', '-']
+        state.emphysema_ynd = st.selectbox("Does the patient have emphysema?", options, options.index(state.emphysema_ynd) if state.emphysema_ynd else 0)
     
-    # Q25 Emphysema
-    options = ['0: No', '1: Yes', '-']
-    state.emphysema_ynd = st.selectbox("Does the patient have emphysema?", options, options.index(state.emphysema_ynd) if state.emphysema_ynd else 0)
+    reproductive_health_expander = st.expander(label="Reproductive health data")
+    with reproductive_health_expander:
+
+        # Q26 Menopausal Status
+        options = ['0: Regular Periods', '1: Irregular Periods', '2: Periods stopped due to menopause', '4: Periods stopped due to Surgery', '-']
+        state.menopausal_status = st.selectbox("Does the patient still have regular periods?", options, 
+                                            options.index(state.menopausal_status) if state.menopausal_status else 0)
+        
+    # Q26b (NEW) Hormone therapy Status
+        options = ['0: No', '1: Yes', '-']
+        state.hormone_therapy = st.selectbox("Have you ever taken supplemental hormones for menopause?", options, options.index(state.hormone_therapy) if state.hormone_therapy else 0)
+        
+        # Q27 Number of Pregnancies
+        state.num_pregnancies = st.slider('How many times has the patient been pregnant?', 0, 10, state.num_pregnancies)
+        st.write(state.num_pregnancies)
     
-    # Q26 Menopausal Status
-    options = ['0: Regular Periods', '1: Irregular Periods', '2: Periods stopped due to menopause', '4: Periods stopped due to Surgery', '-']
-    state.menopausal_status = st.selectbox("Does the patient still have regular periods?", options, 
-                                           options.index(state.menopausal_status) if state.menopausal_status else 0)
-    
-  # Q26b (NEW) Hormone therapy Status
-    options = ['0: No', '1: Yes', '-']
-    state.hormone_therapy = st.selectbox("Have you ever taken supplemental hormones for menopause?", options, options.index(state.hormone_therapy) if state.hormone_therapy else 0)
-    
-    # Q27 Number of Pregnancies
-    state.num_pregnancies = st.slider('How many times has the patient been pregnant?', 0, 10, state.num_pregnancies)
-    st.write(state.num_pregnancies)
-    
-    # Q28 Asthma medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.asthma_med = st.selectbox("Is the patient currently taking asthma medication?", options, options.index(state.asthma_med) if state.asthma_med else 0)
-    
-    # Q29 Cholesterol medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.cholesterol_med = st.selectbox("Is the patient currently taking cholesterol medication?", options, 
-                                         options.index(state.cholesterol_med) if state.cholesterol_med else 0)
-    
-    # Q30 Depression Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.depression_med = st.selectbox("Is the patient currently taking any depression medication?", options,
-                                        options.index(state.depression_med) if state.depression_med else 0)
-    
-    # Q31 Hypertension Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.htn_med = st.selectbox("Is the patient currently taking any hypertension medication?", options,
-                                 options.index(state.htn_med) if state.htn_med else 0)
-    
-    # Q32 Decongestants Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.decongestants_med = st.selectbox("Is the patient currently taking any decongestant medication?", options,
-                                           options.index(state.decongestants_med) if state.decongestants_med else 0)
-    
-    # Q33 Antihistamine Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.antihistamines_med = st.selectbox("Is the patient currently taking anti-histamine medication?", options,
-                                            options.index(state.antihistamines_med) if state.antihistamines_med else 0)
-    
-    # Q34 Anxiety Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.anxiety_med = st.selectbox("Is the patient currently taking any anxiety medication?", options,
-                                     options.index(state.anxiety_med) if state.anxiety_med else 0)
-    
-    # Q35 Diabetes Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.diabetes_med = st.selectbox("Is the patient currently taking any diabetes medication?", options,
-                                      options.index(state.diabetes_med) if state.diabetes_med else 0)
-    
-    # Q36 Sedative Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.sedative_med = st.selectbox("Is the patient currently taking any sedative medication?", options,
-                                     options.index(state.sedative_med) if state.sedative_med else 0)
-    
-    # Q37 Thyroid Medication
-    options = ['0: Not taking', '1: Taking', '-']
-    state.thyroid_med = st.selectbox("Is the patient currently taking any thyroid medication?", options,
+    medications_expander = st.expander(label="Medications data")
+    with medications_expander:
+        # Q28 Asthma medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.asthma_med = st.selectbox("Is the patient currently taking asthma medication?", options, options.index(state.asthma_med) if state.asthma_med else 0)
+        
+        # Q29 Cholesterol medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.cholesterol_med = st.selectbox("Is the patient currently taking cholesterol medication?", options, 
+                                            options.index(state.cholesterol_med) if state.cholesterol_med else 0)
+        
+        # Q30 Depression Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.depression_med = st.selectbox("Is the patient currently taking any depression medication?", options,
+                                            options.index(state.depression_med) if state.depression_med else 0)
+        
+        # Q31 Hypertension Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.htn_med = st.selectbox("Is the patient currently taking any hypertension medication?", options,
+                                    options.index(state.htn_med) if state.htn_med else 0)
+        
+        # Q32 Decongestants Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.decongestants_med = st.selectbox("Is the patient currently taking any decongestant medication?", options,
+                                            options.index(state.decongestants_med) if state.decongestants_med else 0)
+        
+        # Q33 Antihistamine Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.antihistamines_med = st.selectbox("Is the patient currently taking anti-histamine medication?", options,
+                                                options.index(state.antihistamines_med) if state.antihistamines_med else 0)
+        
+        # Q34 Anxiety Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.anxiety_med = st.selectbox("Is the patient currently taking any anxiety medication?", options,
+                                        options.index(state.anxiety_med) if state.anxiety_med else 0)
+        
+        # Q35 Diabetes Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.diabetes_med = st.selectbox("Is the patient currently taking any diabetes medication?", options,
+                                        options.index(state.diabetes_med) if state.diabetes_med else 0)
+        
+        # Q36 Sedative Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.sedative_med = st.selectbox("Is the patient currently taking any sedative medication?", options,
+                                        options.index(state.sedative_med) if state.sedative_med else 0)
+        
+        # Q37 Thyroid Medication
+        options = ['0: Not taking', '1: Taking', '-']
+        state.thyroid_med = st.selectbox("Is the patient currently taking any thyroid medication?", options,
                                      options.index(state.thyroid_med) if state.thyroid_med else 0)
     
     # # Q38 Has the patient ever taken supplemental hormones for Hypothyroid?
@@ -515,31 +543,36 @@ def page_medinputs(state):
     ################# PREDICTION BUTTON #################
     
     prediction_df = pd.DataFrame([[
-    state.sex[0],
-    state.age, 
-    ## state.race[0], 
-    ## state.education_survey1[0], 
-    ## state.hdl, 
-    ## state.ldl, 
-    ## state.total_cholesterol, 
-    ## state.triglycerides,
-    ## state.heightcm, 
-    state.weightkg, 
-    ## state.hipgirthm, 
-    ## state.neckgirthm, 
-    ## state.waistgirthm, 
-    ## state.waisthip,
-    ## state.sitsysm, 
-    ## state.sitdiam, 
-    ## state.cups_coffee, 
-    state.caffeine, 
-    state.alcohol_wk, 
-    state.packs_week, 
-    ## state.pack_years, 
-    ## state.eval_general[0], 
-    ## state.eval_life[0], 
-    ## state.eval_health[0], 
-    state.naps]],
+    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
+
+
+    
+    # prediction_df = pd.DataFrame([[
+    # state.sex[0],
+    # state.age, 
+    # ## state.race[0], 
+    # ## state.education_survey1[0], 
+    # ## state.hdl, 
+    # ## state.ldl, 
+    # ## state.total_cholesterol, 
+    # ## state.triglycerides,
+    # ## state.heightcm, 
+    # state.weightkg, 
+    # ## state.hipgirthm, 
+    # ## state.neckgirthm, 
+    # ## state.waistgirthm, 
+    # ## state.waisthip,
+    # ## state.sitsysm, 
+    # ## state.sitdiam, 
+    # ## state.cups_coffee, 
+    # state.caffeine, 
+    # state.alcohol_wk, 
+    # state.packs_week, 
+    # ## state.pack_years, 
+    # ## state.eval_general[0], 
+    # ## state.eval_life[0], 
+    # ## state.eval_health[0], 
+    # state.naps]],
     ## state.snore_freq[0], 
     ## state.snore_vol[0], 
     ## state.choke_freq[0], 
@@ -571,32 +604,32 @@ def page_medinputs(state):
     # state.x0_C[0], 
     # state.x0_N[0], 
     # state.x0_P[0]]],
-    columns=[
-    'sex',
-    'age',
-    ##'race',
-    # 'education_survey1',
-    # 'hdl',
-    # 'ldl',
-    # 'total_cholesterol',
-    # 'triglycerides',
-    # 'heightcm',
-    'weightkg',
-    # 'hipgirthm',
-    # 'neckgirthm',
-    # 'waistgirthm',
-    # 'waisthip',
-    # 'sitsysm',
-    # 'sitdiam',
-    # 'cups_coffee',
-    'caffeine',
-    'alcohol_wk',
-    'packs_week',
-    # 'pack_years',
-    # 'eval_general',
-    # 'eval_life',
-    # 'eval_health',
-    'naps',
+    # columns=[
+    # 'sex',
+    # 'age',
+    # ##'race',
+    # # 'education_survey1',
+    # # 'hdl',
+    # # 'ldl',
+    # # 'total_cholesterol',
+    # # 'triglycerides',
+    # # 'heightcm',
+    # 'weightkg',
+    # # 'hipgirthm',
+    # # 'neckgirthm',
+    # # 'waistgirthm',
+    # # 'waisthip',
+    # # 'sitsysm',
+    # # 'sitdiam',
+    # # 'cups_coffee',
+    # 'caffeine',
+    # 'alcohol_wk',
+    # 'packs_week',
+    # # 'pack_years',
+    # # 'eval_general',
+    # # 'eval_life',
+    # # 'eval_health',
+    # 'naps'
     ## 'snore_freq',
     ## 'snore_vol',
     ## 'choke_freq',
@@ -628,26 +661,26 @@ def page_medinputs(state):
     # 'x0_C',
     # 'x0_N',
     # 'x0_P',
-    ])
+   # ])
 
 
     if st.button("make prediction"):
         st.dataframe(prediction_df)
-        model1 = joblib.load('se_pipeline.joblib')
+        model1 = joblib.load('sleep_models/se_pipeline.joblib')
         state.yse = model1.predict(prediction_df)
         #st.write(state.yse)
 
         state.yse_probability = model1.predict_proba(prediction_df)
         #st.write(state.yse_probability)
        
-        model2 = joblib.load('waso_pipeline.joblib')
+        model2 = joblib.load('sleep_models/waso_pipeline.joblib')
         state.ywaso = model2.predict(prediction_df)
         #st.write(state.ywaso)
         
         state.ywaso_probability = model2.predict_proba(prediction_df)
         #st.write(state.ywaso_probability)
 
-        model3 = joblib.load('tst_pipeline.joblib')
+        model3 = joblib.load('sleep_models/tst_pipeline.joblib')
         state.ytst = model3.predict(prediction_df)
         #st.write(state.ytst)
 
@@ -680,82 +713,110 @@ def page_predictions(state):
 
     st.title("Sleep Health Summary Score")
     total_probability_percentage = ((state.yse_probability[0,0] + state.ywaso_probability[0,0] + state.ytst_probability[0,0]) / 3 *100)
-    probability_percent = f"{round(total_probability_percentage,0)}%"
+    probability_percent = f"{int(round(total_probability_percentage,0))}%"
     st.title(probability_percent)
     st.subheader("(above 50 is in normal range, below 50 suggests improvements could be made)")
     #state.nights = ((array1 + array2 + array3 ) * 31/3)
     # st.write("It is likely you will have") 
     # st.write(state.nights) 
     # st.write("nights of good sleep in a month")
-    
-    
-    
-    st.title("Sleep Efficiency: are you likely to be spending enough time asleep as a proportion of the time you are in bed?")
+    st.write("---")
+    st.write("---")
+       
+    se_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Sleep Efficiency: </p>'
+    st.markdown(se_label, unsafe_allow_html=True)
+    se_label2 = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Are you likely to be spending enough time asleep as a proportion of the time you are in bed?</p>'
+    st.markdown(se_label2, unsafe_allow_html=True)
     #st.write(state.yse)
     if state.yse == 0:
-        st.header(":zzz:")
-    elif state.ytst == 1:
+        st.title(":zzz: :zzz: :zzz:")
+    elif state.yse == 1:
         st.title(":flushed:") 
         st.header("It is likely that you will be spending time in bed awake")
-    yse_results = f"what's my probabilty of having enough sleep compared to the time i'm in bed? {state.yse_probability[0,0]*100} %" 
-    st.write(yse_results)
+    yse_results_label = '<p style="font-family:IBM Plex Sans; color:Green; font-size: 24px;">What\'s my probabilty of spending a good amount of time asleep whilst in bed?</p>'
+    st.markdown(yse_results_label, unsafe_allow_html=True)
+    yse_results = f"{int(round(state.yse_probability[0,0]*100))} %" 
+    st.header(yse_results)
     #st.write("what's my probabilty of having enough sleep compared to the time i'm in bed?") 
     #st.write(state.yse_probability[0,0])
-
-    st.title("Wake After Sleep Onset: are you likely to fall asleep quickly if you wake up during sleep?")
+    st.write("---")
+    
+    waso_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Wake After Sleep Onset:</p>'
+    st.markdown(waso_label, unsafe_allow_html=True)
+    waso_label2 = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Are you likely to fall asleep quickly if you wake up during the night?</p>'
+    st.markdown(waso_label2, unsafe_allow_html=True)
     #st.write(state.ywaso)
     if state.ywaso == 0:
-        st.title(":zzz:")
-    elif state.ytst == 1:
+        st.title(":zzz: :zzz: :zzz:")
+    elif state.ywaso == 1:
         st.title(":flushed:") 
-        st.header("It is likely that if you wake up after falling sleep it takes you a while to nod off again")
-    ywaso_results = f"Whats the percentage liklihood of waking up after you've fallen asleep {state.ywaso_probability[0,0]*100}%"
-    st.write(ywaso_results)
+        st.header("It is likely that if you wake up after falling asleep it takes you a while to nod off again")
+    #ywaso_results = f"Whats the percentage liklihood of falling sleep quickly if you wake up in the night? {round(state.ywaso_probability[0,0]*100)}%"
+    ywaso_results_label = '<p style="font-family:IBM Plex Sans; color:Green; font-size: 24px;">What\'s the percentage liklihood of falling asleep quickly if you wake up in the night?</p>'
+    st.markdown(ywaso_results_label, unsafe_allow_html=True)
+    ywaso_results = f"{int(round(state.ywaso_probability[0,0]*100))} %" 
+    st.header(ywaso_results)
+    #st.write(ywaso_results)
     #st.write(state.ywaso_probability)
-
-    st.title("Total Sleep Duration: are you likely to be spending enough time actually asleep?")
+    st.write("---")
+    
+    st_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Total Sleep Duration:</p>'
+    st.markdown(st_label, unsafe_allow_html=True)
+    st_label2 = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">are you likely to be spending enough time actually asleep?</p>'
+    st.markdown(st_label2, unsafe_allow_html=True)
     #st.write(state.ytst)
     if state.ytst == 0:
-        st.title(":zzz:")
+        st.title(":zzz: :zzz: :zzz:")
     elif state.ytst == 1:
         st.title(":flushed:") 
         st.header("It is likely that you are not getting enough sleep")
-    ytst_results = f"Whats the percentage liklihood of getting enough total sleep {state.ytst_probability[0,0]*100}%"
-    st.write(ytst_results)
-
+    #ytst_results = f"Whats the percentage liklihood of getting enough total sleep {round(state.ytst_probability[0,0]*100)}%"
+    #st.write(ytst_results)
+    ytst_results_label = '<p style="font-family:IBM Plex Sans; color:Green; font-size: 24px;">What\'s the percentage liklihood of getting enough sleep?</p>'
+    st.markdown(ytst_results_label, unsafe_allow_html=True)
+    ytst_results = f"{int(round(state.ytst_probability[0,0]*100))} %" 
+    st.header(ytst_results)
 
 
     st.write("---")
-
+    st.write("---")
  
         
 ##################### Lifestyle section #############################
     
     st.title(":sleeping:lifestyle Changes")
     st.write("---")
-    st.subheader(":coffee:Coffee")
-    state.cups_coffee = st.slider("Adjust the number of coffees you drink each day", 0, 15, state.cups_coffee)
-    st.write(state.cups_coffee)
+    #st.subheader(":coffee:Coffee")
+    #state.cups_coffee = st.slider("Adjust the number of coffees you drink each day", 0, 15, state.cups_coffee)
+    #st.write(state.cups_coffee)
 
-    state.other_caffeine = st.slider("Adjust the number of other caffeinated drinks do you have each day in addition to coffee?", 0, 15, state.other_caffeine)
+    #state.other_caffeine = st.slider("Adjust the number of other caffeinated drinks do you have each day in addition to coffee?", 0, 15, state.other_caffeine)
     #st.write(state.other_caffeine)
 
-    state.caffeine = state.cups_coffee + state.other_caffeine
+    #state.caffeine = state.cups_coffee + state.other_caffeine
     #st.write(state.caffeine)
-
-    state.weightkg = st.slider("intro text", 0.0, 100.0, state.weightkg)
+    weight_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Adjust to reflect your target weight</p>'
+    st.markdown(weight_label, unsafe_allow_html=True)
+    state.weightkg = st.slider("Set Target weight", 0.0, 100.0, state.weightkg)
     #st.write(state.weightkg)
     
-    state.alcohol_wk = st.slider("How many alcoholic beverages do you drink each week?", 0, 20, state.alcohol_wk)
+    alcohol_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Adjust the number of alcoholic beverages you\'ll drink each week</p>'
+    st.markdown(alcohol_label, unsafe_allow_html=True)
+    state.alcohol_wk = st.slider("Adjust alcoholic beverages", 0, 20, state.alcohol_wk)
     #st.write(state.alcohol_wk)
 
-    options = ['-','0: No', '1: Yes']
-    state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 1)
+    #options = ['-','0: No', '1: Yes']
+    #state.smoke = st.radio("Do you smoke?", options, options.index(state.smoke) if state.smoke else 1)
     #st.write(state.smoke)
-    
-    state.packs_week = st.slider("If yes how many packs a week do you smoke?", 0, 30, state.packs_week)
+    packs_week_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">If you smoke, adjust the number of packs a week you\'ll smoke</p>'
+    st.markdown(packs_week_label, unsafe_allow_html=True)
+    state.packs_week = st.slider("Adjust packs a week", 0, 30, state.packs_week)
     #st.write(state.packs_week)
     
+    naps_label = '<p style="font-family:IBM Plex Sans; color:Blue; font-size: 30px;">Adjust the hours of sleep you\'ll get during a typical week from daytime or evening naps</p>'
+    st.markdown(naps_label, unsafe_allow_html=True)    
+    state.naps = st.slider("Adjust nap hours", 0, 20, state.naps)
+    #st.write(state.naps)
 
     # Dynamic state assignments
     # for i in range(3):
@@ -763,138 +824,143 @@ def page_predictions(state):
     #     state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
 
     prediction_df = pd.DataFrame([[
-    state.sex[0],
-    state.age, 
-    state.race[0], 
-    state.education_survey1[0], 
-    state.hdl, 
-    state.ldl, 
-    state.total_cholesterol, 
-    state.triglycerides,
-    state.heightcm, 
-    state.weightkg, 
-    state.hipgirthm, 
-    state.neckgirthm, 
-    state.waistgirthm, 
-    state.waisthip,
-    state.sitsysm, 
-    state.sitdiam, 
-    state.cups_coffee, 
-    state.caffeine, 
-    state.alcohol_wk, 
-    state.packs_week, 
-    state.pack_years, 
-    state.eval_general[0], 
-    state.eval_life[0], 
-    state.eval_health[0], 
-    state.naps,
-    state.snore_freq[0], 
-    state.snore_vol[0], 
-    state.choke_freq[0], 
-    state.apnea_freq[0],
-    state.awake_freq[0], 
-    state.nasal_cong_none[0], 
-    state.any_cvd[0], 
-    state.hypertension_ynd[0],
-    state.stroke_ynd[0], 
-    state.asthma_ynd[0], 
-    state.thyroid_ynd[0],
-    state.thyroid_problem[0], 
-    state.arthritis_ynd[0],
-    state.emphysema_ynd[0], 
-    state.menopausal_status[0], 
-    state.hormone_therapy[0],
-    state.num_pregnancies,
-    state.asthma_med[0], 
-    state.cholesterol_med[0], 
-    state.depression_med[0], 
-    state.htn_med[0],
-    state.decongestants_med[0], 
-    state.antihistamines_med[0], 
-    state.anxiety_med[0],
-    state.diabetes_med[0], 
-    state.sedative_med[0], 
-    state.thyroid_med[0]]], 
-    # state.x0_Hypothyroid[0],
+    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
+
+
+
+    # prediction_df = pd.DataFrame([[
+    # state.sex[0],
+    # state.age, 
+    # # state.race[0], 
+    # # state.education_survey1[0], 
+    # # state.hdl, 
+    # # state.ldl, 
+    # # state.total_cholesterol, 
+    # # state.triglycerides,
+    # # state.heightcm, 
+    # state.weightkg, 
+    # # state.hipgirthm, 
+    # # state.neckgirthm, 
+    # # state.waistgirthm, 
+    # # state.waisthip,
+    # # state.sitsysm, 
+    # # state.sitdiam, 
+    # # state.cups_coffee, 
+    # state.caffeine, 
+    # state.alcohol_wk, 
+    # state.packs_week, 
+    # # state.pack_years, 
+    # # state.eval_general[0], 
+    # # state.eval_life[0], 
+    # # state.eval_health[0], 
+    # state.naps]],
+    # state.snore_freq[0], 
+    # state.snore_vol[0], 
+    # state.choke_freq[0], 
+    # state.apnea_freq[0],
+    # state.awake_freq[0], 
+    # state.nasal_cong_none[0], 
+    # state.any_cvd[0], 
+    # state.hypertension_ynd[0],
+    # state.stroke_ynd[0], 
+    # state.asthma_ynd[0], 
+    # state.thyroid_ynd[0],
+    # state.thyroid_problem[0], 
+    # state.arthritis_ynd[0],
+    # state.emphysema_ynd[0], 
+    # state.menopausal_status[0], 
+    # state.hormone_therapy[0],
+    # state.num_pregnancies,
+    # state.asthma_med[0], 
+    # state.cholesterol_med[0], 
+    # state.depression_med[0], 
+    # state.htn_med[0],
+    # state.decongestants_med[0], 
+    # state.antihistamines_med[0], 
+    # state.anxiety_med[0],
+    # state.diabetes_med[0], 
+    # state.sedative_med[0], 
+    # state.thyroid_med[0]]], 
+    # # state.x0_Hypothyroid[0],
     # state.x0_C[0], 
     # state.x0_N[0], 
     # state.x0_P[0]]],
-    columns=[
-    'sex',
-    'age',
-    'race',
-    'education_survey1',
-    'hdl',
-    'ldl',
-    'total_cholesterol',
-    'triglycerides',
-    'heightcm',
-    'weightkg',
-    'hipgirthm',
-    'neckgirthm',
-    'waistgirthm',
-    'waisthip',
-    'sitsysm',
-    'sitdiam',
-    'cups_coffee',
-    'caffeine',
-    'alcohol_wk',
-    'packs_week',
-    'pack_years',
-    'eval_general',
-    'eval_life',
-    'eval_health',
-    'naps',
-    'snore_freq',
-    'snore_vol',
-    'choke_freq',
-    'apnea_freq',
-    'awake_freq',
-    'nasal_cong_none',
-    'any_cvd',
-    'hypertension_ynd',
-    'stroke_ynd',
-    'asthma_ynd',
-    'thyroid_ynd',
-    'thyroid_problem',
-    'arthritis_ynd',
-    'emphysema_ynd',
-    'menopausal_status',
-    'hormone_therapy',
-    'num_pregnancies',
-    'asthma_med',
-    'cholesterol_med',
-    'depression_med',
-    'htn_med',
-    'decongestants_med',
-    'antihistamines_med',
-    'anxiety_med',
-    'diabetes_med',
-    'sedative_med',
-    'thyroid_med',
-    # 'x0_Hypothyroid',
+    # columns=[
+    # 'sex',
+    # 'age',
+    # # 'race',
+    # # 'education_survey1',
+    # # 'hdl',
+    # # 'ldl',
+    # # 'total_cholesterol',
+    # # 'triglycerides',
+    # # 'heightcm',
+    # 'weightkg',
+    # # 'hipgirthm',
+    # # 'neckgirthm',
+    # # 'waistgirthm',
+    # # 'waisthip',
+    # # 'sitsysm',
+    # # 'sitdiam',
+    # # 'cups_coffee',
+    # 'caffeine',
+    # 'alcohol_wk',
+    # 'packs_week',
+    # # 'pack_years',
+    # # 'eval_general',
+    # # 'eval_life',
+    # # 'eval_health',
+    # 'naps'
+    # 'snore_freq',
+    # 'snore_vol',
+    # 'choke_freq',
+    # 'apnea_freq',
+    # 'awake_freq',
+    # 'nasal_cong_none',
+    # 'any_cvd',
+    # 'hypertension_ynd',
+    # 'stroke_ynd',
+    # 'asthma_ynd',
+    # 'thyroid_ynd',
+    # 'thyroid_problem',
+    # 'arthritis_ynd',
+    # 'emphysema_ynd',
+    # 'menopausal_status',
+    # 'hormone_therapy',
+    # 'num_pregnancies',
+    # 'asthma_med',
+    # 'cholesterol_med',
+    # 'depression_med',
+    # 'htn_med',
+    # 'decongestants_med',
+    # 'antihistamines_med',
+    # 'anxiety_med',
+    # 'diabetes_med',
+    # 'sedative_med',
+    # 'thyroid_med',
+    # # 'x0_Hypothyroid',
     # 'x0_C',
     # 'x0_N',
     # 'x0_P',
-    ])
+   # ])
 
     if st.button("How will these changes impact my sleep quality"):
         st.dataframe(prediction_df)
-        model1 = joblib.load('se_pipeline.joblib')
+        model1 = joblib.load('sleep_models/se_pipeline.joblib')
         state.yse = model1.predict(prediction_df)
         st.write(state.yse)
 
         state.yse_probability = model1.predict_proba(prediction_df)
         st.write(state.yse_probability)
        
-        model2 = joblib.load('waso_pipeline.joblib')
+        model2 = joblib.load('sleep_models/waso_pipeline.joblib')
         state.ywaso = model2.predict(prediction_df)
         st.write(state.ywaso)
         
         state.ywaso_probability = model2.predict_proba(prediction_df)
         st.write(state.ywaso_probability)
 
-        model3 = joblib.load('tst_pipeline.joblib')
+        model3 = joblib.load('sleep_models/tst_pipeline.joblib')
         state.ytst = model3.predict(prediction_df)
         st.write(state.ytst)
 
@@ -1062,13 +1128,13 @@ def _get_session():
     return session_info.session
 
 
-def _get_state(hash_funcs=None):
-    session = _get_session()
+# def _get_state(hash_funcs=None):
+#     session = _get_session()
 
-    if not hasattr(session, "_custom_session_state"):
-        session._custom_session_state = _SessionState(session, hash_funcs)
+#     if not hasattr(session, "_custom_session_state"):
+#         session._custom_session_state = _SessionState(session, hash_funcs)
 
-    return session._custom_session_state
+#     return session._custom_session_state
 
 
 if __name__ == "__main__":
