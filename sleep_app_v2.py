@@ -176,7 +176,7 @@ def page_userinputs(state):
     ################# PREDICTION BUTTON #################
     
     prediction_df = pd.DataFrame([[
-    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
+    state.weightkg,  state.packs_week, state.naps, state.age, state.caffeine, state.alcohol_wk, state.sex[0]]],columns=['weightkg', 'packs_week','naps','age', 'caffeine', 'alcohol_wk', 'sex'])
 
     # prediction_df = pd.DataFrame([[
     # state.sex[0],
@@ -542,9 +542,10 @@ def page_medinputs(state):
 
     ################# PREDICTION BUTTON #################
     
+    # prediction_df = pd.DataFrame([[
+    # state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
     prediction_df = pd.DataFrame([[
-    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
-
+    state.weightkg,  state.packs_week, state.naps, state.age, state.caffeine, state.alcohol_wk, state.sex[0]]],columns=['weightkg', 'packs_week','naps','age', 'caffeine', 'alcohol_wk', 'sex'])
 
     
     # prediction_df = pd.DataFrame([[
@@ -823,9 +824,11 @@ def page_predictions(state):
     #     key = f"State value {i}"
     #     state[key] = st.slider(f"Set value {i}", 1, 10, state[key])
 
-    prediction_df = pd.DataFrame([[
-    state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
+    # prediction_df = pd.DataFrame([[
+    # state.sex[0], state.age,  state.weightkg,  state.caffeine, state.alcohol_wk, state.packs_week, state.naps]],columns=['sex', 'age', 'weightkg', 'caffeine', 'alcohol_wk', 'packs_week','naps'])
 
+    prediction_df = pd.DataFrame([[
+    state.weightkg,  state.packs_week, state.naps, state.age, state.caffeine, state.alcohol_wk, state.sex[0]]],columns=['weightkg', 'packs_week','naps','age', 'caffeine', 'alcohol_wk', 'sex'])
 
 
     # prediction_df = pd.DataFrame([[
